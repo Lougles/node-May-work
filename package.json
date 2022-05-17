@@ -1,0 +1,23 @@
+{
+  "name": "may-work",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lougles/node-May-work.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lougles/node-May-work/issues"
+  },
+  "homepage": "https://github.com/Lougles/node-May-work#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
