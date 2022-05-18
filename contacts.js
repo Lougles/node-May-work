@@ -4,21 +4,6 @@ const { v4 } = require('uuid');
 const contactsPath = "./db/contacts.js";
 
 
-// contacts.js
-
-// /*
-//  * Раскомментируй и запиши значение
-//  */
-
-// TODO: задокументировать каждую функцию
-// function listContacts() {
-//   fs.readFile(contactsPath)
-//   .then((data) => {
-//       console.table(JSON.parse(data));
-//   },)
-//   .catch((err) => console.log(err.message));
-// }
-
 const listContacts = async () => {
   try{
     const data = await fs.readFile(contactsPath, 'utf-8');
@@ -45,9 +30,9 @@ const removeContact = async (contactId) => {
   try {
     const data = await fs.readFile(contactsPath, 'utf-8');
     const list = JSON.parse(data);
-    const result = list.filter(item => parseInt(item.id) !== parseInt(contactId));
+    const result = list.filter(item => (item.id) !== (contactId));
     fs.writeFile(contactsPath, JSON.stringify(result));
-    console.log(result);
+    console.table(result);
     return result;
   }catch (err) {
     console.log(err.message);
@@ -57,12 +42,26 @@ const removeContact = async (contactId) => {
 const addContact = async (name, email, phone) => {
   try {
     const data = await fs.readFile(contactsPath, 'utf-8');
+    const list = JSON.parse(data);
+    const result = list.push({
+      id: v4(),
+      name,
+      email,
+      phone
+    })
+    fs.writeFile(contactsPath, JSON.stringify(list));
+    console.table(list[list.length-1]);
 
   }catch (err) {
     console.log(err.message);
   }
 }
 
-listContacts();
 
-getContactById(5);
+
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact
+}
