@@ -59,9 +59,7 @@ router.get('/:contactId', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const temp =  req.body;
-    console.log(temp);
-    // await schema.validateAsync(req.body);
+    await schema.validateAsync(req.body);
      res.json({
       status: 'success',
       code: 201,
@@ -78,7 +76,28 @@ router.post('/', async (req, res, next) => {
 })
 
 router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+  try {
+    // const id = req.params.contactId;                      // запрос поступает сразу же? Или нужно тоже через await?
+    console.log("ID: ",req.params.contactId);
+    if (await removeContact(req.params.contactId) === undefined){
+      res.json({
+        status: 'Not Found',
+        code: 404,
+      })
+    }
+    res.json({
+      status: "success",
+      code: 200,
+      data: await removeContact(req.params.contactId),
+    })
+  } catch (error) {
+    res.json({
+      status: 'fail',
+      code: 400,
+      error: error.message,
+    })
+    next(error);
+  }
 })
 
 router.put('/:contactId', async (req, res, next) => {

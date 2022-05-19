@@ -4,6 +4,10 @@ const { v4 } = require('uuid');
 const jsonFile = './contacts.json';
 const newPath = path.join(__dirname, jsonFile);
 
+function uid() {
+  return (performance.now().toString(10)+Math.random().toString(10)).replace(/\./g,"");
+};
+
 
 const listContacts = async () => {
   try{
@@ -26,13 +30,13 @@ const getContactById = async (contactId) => {
   }catch (err) {
     console.log(err.message);
   }
-} 
+}
 
 const removeContact = async (contactId) => {
   try {
     const data = await fs.readFile(newPath, 'utf-8');
     const list = JSON.parse(data);
-    const result = list.filter(item => (item.id) !== (contactId));
+    const result = list.filter(item => parseInt(item.id) !== parseInt(contactId));
     fs.writeFile(newPath, JSON.stringify(result));
     console.table(result);
     return result;
@@ -45,7 +49,7 @@ const addContact = async (body) => {
     const data = await fs.readFile(newPath, 'utf-8');
     const list = JSON.parse(data);
     list.push({
-      id: v4(),
+      id: uid(),
       ...body
     });
     fs.writeFile(newPath, JSON.stringify(list));
