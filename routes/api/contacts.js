@@ -33,7 +33,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:contactId', async (req, res, next) => {
+router.get(`/:contactId`, async (req, res, next) => {
   try {
     const id = req.params.contactId;
     if (await getContactById(id) === undefined) {
@@ -57,29 +57,11 @@ router.get('/:contactId', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res, next) => {
+router.delete(`/:contactId`, async (req, res, next) => {
   try {
-    await schema.validateAsync(req.body);
-     res.json({
-      status: 'success',
-      code: 201,
-      data: await addContact(req.body)
-    })
-  } catch (error) {
-    res.json({
-      status: 'fail',
-      code: 400,
-      error: error.message,
-    })
-    next(error);
-  }
-})
-
-router.delete('/:contactId', async (req, res, next) => {
-  try {
-    // const id = req.params.contactId;                      // запрос поступает сразу же? Или нужно тоже через await?
-    console.log("ID: ",req.params.contactId);
-    if (await removeContact(req.params.contactId) === undefined){
+    const id = req.params.contactId;
+    console.log("ID: ", id);
+    if (await getContactById(id) === undefined){
       res.json({
         status: 'Not Found',
         code: 404,
@@ -100,8 +82,44 @@ router.delete('/:contactId', async (req, res, next) => {
   }
 })
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+router.post('/', async (req, res, next) => {
+  try {
+    await schema.validateAsync(req.body);
+     res.json({
+      status: 'success',
+      code: 201,
+      data: await addContact(req.body)
+    })
+  } catch (error) {
+    res.json({
+      status: 'fail',
+      code: 400,
+      error: error.message,
+    })
+    next(error);
+  }
+})
+router.put('/:id', async (req, res, next) => {
+  try {
+    if (await getContactById(req.params.id) === undefined) {
+      res.json({
+        status: "Not Found",
+        code: 404,
+      })
+    }
+    await schema.validateAsync(req.body);
+    res.json({
+      status: "success",
+      code: 201,
+      data: await updateContact(req.params.id, req.body)
+    })
+  } catch (error) {
+    res.json({
+      status: 'fail',
+      code: 400,
+      error: error.message,
+    })
+  }
 })
 
 module.exports = router

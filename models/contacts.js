@@ -12,7 +12,6 @@ function uid() {
 const listContacts = async () => {
   try{
     const data = await fs.readFile(newPath, 'utf-8');
-    console.table(JSON.parse(data));
     return result = JSON.parse(data);
   }catch(err) {
     console.log('we are here', err);
@@ -25,7 +24,6 @@ const getContactById = async (contactId) => {
     const data = await fs.readFile(newPath, 'utf-8');
     const list = JSON.parse(data);
     const result = list.find(item => parseInt(item.id) === parseInt(contactId));
-    console.table(result);
     return result;
   }catch (err) {
     console.log(err.message);
@@ -38,10 +36,9 @@ const removeContact = async (contactId) => {
     const list = JSON.parse(data);
     const result = list.filter(item => parseInt(item.id) !== parseInt(contactId));
     fs.writeFile(newPath, JSON.stringify(result));
-    console.table(result);
     return result;
   }catch (err) {
-    console.log(err.message);
+    console.log('problem here',err.message);
   }
 }
 const addContact = async (body) => {
@@ -58,9 +55,21 @@ const addContact = async (body) => {
     console.log(err);
   }
 }
-
 const updateContact = async (contactId, body) => {
-
+  try{
+    const data = await fs.readFile(newPath, 'utf-8');
+    const list = JSON.parse(data);
+    list.map(item => {
+      if (item.id === parseInt(contactId)) {
+        Object.assign(item, body);
+      }
+    })
+    fs.writeFile(newPath, JSON.stringify(list));
+    console.log(list);
+    return list;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 module.exports = {
