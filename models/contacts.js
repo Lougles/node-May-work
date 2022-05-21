@@ -72,6 +72,27 @@ const updateContact = async (contactId, body) => {
   }
 }
 
+// It's working with forEach way.
+// const testUpdateContact = async (contactId, body) => {
+//   try{
+//     const data = await fs.readFile(newPath, 'utf-8');
+//     let list = JSON.parse(data);
+//     const { name, email, phone } = body;
+//     list.forEach(list => {
+//       if (list.id === contactId) {
+//         list.name = name,
+//         list.email = email,
+//         list.phone = phone
+//       }
+//     })
+//     console.log(list);
+//     fs.writeFile(newPath, JSON.stringify(list));
+//   }catch(e){
+//     console.log(e);
+//   }
+// }
+
+
 module.exports = {
   listContacts,
   getContactById,
