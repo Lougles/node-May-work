@@ -10,6 +10,10 @@ const {
 const router = express.Router()
 const Joi = require('joi');
 const { isError } = require('joi');
+const {Users } = require("../../db/collection");
+
+//    const test = await Users.find({}).toArray();
+//    console.log(test);
 
 const schema = Joi.object({
   name: Joi.string().alphanum().min(3).max(10).required(),
@@ -21,17 +25,27 @@ const schema = Joi.object({
   phone: Joi.string().required(),
 })
 
+// router.get('/', async (req, res, next) => {
+//   try {
+//     res.json({
+//       status: 'success',
+//       code: 200,
+//       data: await listContacts()
+//     })
+//   } catch (err) {
+//     res.status(500).json({message: "Some mistake", err})
+//   }
+// })
+
 router.get('/', async (req, res, next) => {
-  try {
-    res.json({
-      status: 'success',
-      code: 200,
-      data: await listContacts()
-    })
-  } catch (err) {
-    res.status(500).json({message: "Some mistake", err})
+  try{
+    const users = await Users.find({}).toArray();
+    res.json({users});
+  }catch(e){
+
   }
-})
+}
+
 
 router.get(`/:contactId`, async (req, res, next) => {
   try {
