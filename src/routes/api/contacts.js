@@ -136,36 +136,38 @@ router.post('/', async (req, res, next) => {
       status: "Fail",
       error: err.message
     });
-    // res.json({
-    //   status: 'Fail',
-    //   error: err.message,
-    // }).status(401);
     next(err);
   }finally {
     await client.close();
   }
 })
 
-router.put('/:id', async (req, res, next) => {
+router.patch('/:contactId', async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
   try {
-    // if (await getContactById(req.params.id) === undefined) {
-    //   res.json({
-    //     status: "Not Found",
-    //     code: 404,
-    //   })
-    // }
-    await schema.validateAsync(req.body);
-    res.json({
-      status: "success",
-      code: 201,
-      data: console.log('update')
-    })
-  } catch (error) {
+    const id = new ObjectID(req.params.contactId);
+    const {name, email, phone} = await schema.validateAsync(req.body);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .findOneAndUpdate({_id: id}, { $set: {name, email, phone}});
+    if (result){
+      res.json({
+        status: "success",
+        data: result,
+      })
+    }else {
+      res.sendStatus(304);
+    }
+  } catch (err) {
     res.json({
       status: 'fail',
-      code: 400,
-      error: error.message,
+      error: err.message,
     })
+  }finally {
+    await client.close();
   }
 })
 
