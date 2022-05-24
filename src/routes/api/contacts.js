@@ -1,9 +1,13 @@
+const { ObjectID } = require('bson');
 const express = require('express');
-const router = express.Router()
+const router = express.Router();
 const Joi = require('joi');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 const urlDB = process.env.DB_URL;
+const dbName = process.env.DB_NAME;
+const dbCollection = process.env.DB_COLLECTION;
+
 // const client = new MongoClient(urlDB, {
 //   useUnifiedTopology: true,
 // });
@@ -30,8 +34,8 @@ router.get('/', async (req, res, next) => {
   }).connect();
   try{
     const result = await client
-    .db('Users')
-    .collection('Contacts')
+    .db(dbName)
+    .collection(dbCollection)
     .find()
     .toArray();
     res.json({
@@ -46,62 +50,66 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-// router.get('/', async (req, res, next) => {
-//   try{
-//     const users = await Users.find({}).toArray();
-//     res.json({users});
-//   }catch(e){
-
-//   }
-// },
-
-
 router.get(`/:contactId`, async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
   try {
-    const id = req.params.contactId;
-    // if (await getContactById(id) === undefined) {
-    //   res.json({
-    //     status: 'Not found',
-    //     code: 404,
-    //     data: 'No data'
-    //   })
-    // }
-    res.json({
-      status: 'success',
-      code: 200,
-      data:  'get:ID'
-    })
+    const id = new ObjectID(req.params.contactId);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .findOne({_id: id}, {
+      name: 1,
+      email: 1,
+      phone: 1,
+    });
+    if(result){
+      res.json({
+        status: "success",
+        data: result
+      })
+    }else{
+      res.sendStatus(404);
+    }
   } catch (err) {
     res.json({
       status: 'mistake',
-      code: 500,
-      message: err
+      message: err.message
     })
+    next(err);
+  }  finally {
+    await client.close();
   }
-}),
+})
 
 router.delete(`/:contactId`, async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
   try {
-    const id = req.params.contactId;
-    console.log("ID: ", id);
-    // if (await getContactById(id) === undefined){
-    //   res.json({
-    //     status: 'Not Found',
-    //     code: 404,
-    //   })
-    // }
-    res.json({
-      status: "success",
-      code: 200,
-      data: console.log('delete:id')
-    })
-  } catch (error) {
+    const id = new ObjectID(req.params.contactId);
+    console.log(id);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .deleteOne({_id: id})
+    if(result){
+      res.json({
+        status: "success",
+        data: result,
+      })
+    }else {
+      res.sendStatus(404);
+    }
+  } catch (err) {
     res.json({
       status: 'fail',
-      code: 400,
       error: error.message,
     })
     next(error);
+  }finally {
+    await client.close();
   }
 })
 
@@ -121,7 +129,8 @@ router.post('/', async (req, res, next) => {
     })
     next(error);
   }
-}),
+})
+
 router.put('/:id', async (req, res, next) => {
   try {
     // if (await getContactById(req.params.id) === undefined) {
