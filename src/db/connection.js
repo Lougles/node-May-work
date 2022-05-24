@@ -1,8 +1,13 @@
+const { cp } = require('fs');
 const { MongoClient } = require('mongodb');
 require('dotenv').config()
-
+const collections = {};
 const url = process.env.MONGO_URL;
 const dbName = process.env.DB_NAME;
+
+const getCollection = () => {
+  return collections;
+}
 
 const connectMongo = async () => {
   const client = await MongoClient(url).connect();

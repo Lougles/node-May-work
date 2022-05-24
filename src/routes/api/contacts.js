@@ -1,17 +1,16 @@
 const express = require('express');
-const { result } = require('lodash');
-const {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact
-} = require("../../models/contacts")
 const router = express.Router()
 const Joi = require('joi');
-const { isError } = require('joi');
-const {Users } = require("../../db/collection");
-
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
+const urlDB = process.env.DB_URL;
+// const client = new MongoClient(urlDB, {
+//   useUnifiedTopology: true,
+// });
+// const { result } = require('lodash');
+// const { isError } = require('joi');
+// const {Users } = require("../../db/collection");
+// const { mod } = require('prelude-ls');
 //    const test = await Users.find({}).toArray();
 //    console.log(test);
 
@@ -25,42 +24,52 @@ const schema = Joi.object({
   phone: Joi.string().required(),
 })
 
-// router.get('/', async (req, res, next) => {
-//   try {
-//     res.json({
-//       status: 'success',
-//       code: 200,
-//       data: await listContacts()
-//     })
-//   } catch (err) {
-//     res.status(500).json({message: "Some mistake", err})
-//   }
-// })
-
 router.get('/', async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
   try{
-    const users = await Users.find({}).toArray();
-    res.json({users});
-  }catch(e){
-
+    const result = await client
+    .db('Users')
+    .collection('Contacts')
+    .find()
+    .toArray();
+    res.json({
+      status: 'success',
+      data: result,
+    })
+  } catch (err) {
+    res.status(500).json({message: "Some mistake", err})
+    next(err);
+  }finally{
+    await client.close();
   }
-}
+})
+
+// router.get('/', async (req, res, next) => {
+//   try{
+//     const users = await Users.find({}).toArray();
+//     res.json({users});
+//   }catch(e){
+
+//   }
+// },
 
 
 router.get(`/:contactId`, async (req, res, next) => {
   try {
     const id = req.params.contactId;
-    if (await getContactById(id) === undefined) {
-      res.json({
-        status: 'Not found',
-        code: 404,
-        data: 'No data'
-      })
-    }
+    // if (await getContactById(id) === undefined) {
+    //   res.json({
+    //     status: 'Not found',
+    //     code: 404,
+    //     data: 'No data'
+    //   })
+    // }
     res.json({
       status: 'success',
       code: 200,
-      data: await getContactById(id)
+      data:  'get:ID'
     })
   } catch (err) {
     res.json({
@@ -69,22 +78,22 @@ router.get(`/:contactId`, async (req, res, next) => {
       message: err
     })
   }
-})
+}),
 
 router.delete(`/:contactId`, async (req, res, next) => {
   try {
     const id = req.params.contactId;
     console.log("ID: ", id);
-    if (await getContactById(id) === undefined){
-      res.json({
-        status: 'Not Found',
-        code: 404,
-      })
-    }
+    // if (await getContactById(id) === undefined){
+    //   res.json({
+    //     status: 'Not Found',
+    //     code: 404,
+    //   })
+    // }
     res.json({
       status: "success",
       code: 200,
-      data: await removeContact(req.params.contactId),
+      data: console.log('delete:id')
     })
   } catch (error) {
     res.json({
@@ -102,7 +111,7 @@ router.post('/', async (req, res, next) => {
      res.json({
       status: 'success',
       code: 201,
-      data: await addContact(req.body)
+      data: console.log('add')
     })
   } catch (error) {
     res.json({
@@ -112,20 +121,20 @@ router.post('/', async (req, res, next) => {
     })
     next(error);
   }
-})
+}),
 router.put('/:id', async (req, res, next) => {
   try {
-    if (await getContactById(req.params.id) === undefined) {
-      res.json({
-        status: "Not Found",
-        code: 404,
-      })
-    }
+    // if (await getContactById(req.params.id) === undefined) {
+    //   res.json({
+    //     status: "Not Found",
+    //     code: 404,
+    //   })
+    // }
     await schema.validateAsync(req.body);
     res.json({
       status: "success",
       code: 201,
-      data: await updateContact(req.params.id, req.body)
+      data: console.log('update')
     })
   } catch (error) {
     res.json({
