@@ -114,20 +114,35 @@ router.delete(`/:contactId`, async (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
   try {
-    await schema.validateAsync(req.body);
-     res.json({
-      status: 'success',
-      code: 201,
-      data: console.log('add')
-    })
-  } catch (error) {
-    res.json({
-      status: 'fail',
-      code: 400,
-      error: error.message,
-    })
-    next(error);
+    const data = await schema.validateAsync(req.body);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .insertOne(data);
+    if(result){
+      res.json({
+       status: 'success',
+       data: result
+     })
+    }else {
+      res.sendStatus(500);
+    }
+  } catch (err) {
+    res.status(500).json({
+      status: "Fail",
+      error: err.message
+    });
+    // res.json({
+    //   status: 'Fail',
+    //   error: err.message,
+    // }).status(401);
+    next(err);
+  }finally {
+    await client.close();
   }
 })
 
