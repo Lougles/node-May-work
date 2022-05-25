@@ -1,15 +1,13 @@
 const { ObjectID } = require('bson');
+const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
-const Joi = require('joi');
-const modelsMiddleware = require("../../middlewares/models") 
- 
+const {joiName, joiEmail, joiPhone, joiFavorite} = require('../../middlewares/validation');
+const modelsMiddleware = require("../../middlewares/models");
+
 // const { result } = require('lodash');
 // const { isError } = require('joi');
-// const {Users } = require("../../db/collection");
 // const { mod } = require('prelude-ls');
-//    const test = await Users.find({}).toArray();
-//    console.log(test);
 
 const schema = Joi.object({
   name: Joi.string().alphanum().min(3).max(10).required(),
@@ -21,24 +19,6 @@ const schema = Joi.object({
   phone: Joi.string().required(),
   favorite: Joi.boolean().required(),
 })
-const joiName = Joi.object({
-  name: Joi.string().alphanum().min(3).max(10).required(),
-})
-const joiEmail = Joi.object({
-  email: Joi.string().email({
-    minDomainSegments: 2, tlds: {
-      allow: ['com', 'net']
-    }
-  }).required()
-})
-
-const joiFavorite = Joi.object({
-  favorite: Joi.boolean().required(),
-})
-const joiPhone = Joi.object({
-  phone: Joi.string().required(),
-})
-
 router.use(modelsMiddleware);
 
 router.get('/', async (req, res, next) => {
@@ -53,7 +33,6 @@ router.get('/', async (req, res, next) => {
     next(err);
   }
 })
-
 router.get(`/:contactId`, async (req, res, next) => {
   try {
     const id = new ObjectID(req.params.contactId);
@@ -78,7 +57,6 @@ router.get(`/:contactId`, async (req, res, next) => {
     next(err);
   }
 })
-
 router.delete(`/:contactId`, async (req, res, next) => {
   try {
     const id = new ObjectID(req.params.contactId);
@@ -99,7 +77,6 @@ router.delete(`/:contactId`, async (req, res, next) => {
     next(error);
   }
 })
-
 router.post('/', async (req, res, next) => {
   try {
     const data = await schema.validateAsync(req.body);
@@ -110,17 +87,18 @@ router.post('/', async (req, res, next) => {
        data: result
      })
     }else {
-      res.sendStatus(500);
+      res.json({
+        status: "Fail",
+      })
     }
   } catch (err) {
-    res.status(500).json({
+    res.status(404).json({
       status: "Fail",
       error: err.message
     });
     next(err);
   }
 })
-
 router.patch('/:contactId', async (req, res, next) => {
   try {
     const id = new ObjectID(req.params.contactId);
@@ -142,7 +120,6 @@ router.patch('/:contactId', async (req, res, next) => {
     })
   }
 })
-
 router.put('/favorite/:contactId', async (req, res, next) => {
   try {
     const {favorite} = await joiFavorite.validateAsync(req.body);
@@ -164,7 +141,6 @@ router.put('/favorite/:contactId', async (req, res, next) => {
     })
   }
 })
-
 router.put('/phone/:contactId', async (req, res, next) => {
   try {
     const {phone} = await joiPhone.validateAsync(req.body);
@@ -185,7 +161,6 @@ router.put('/phone/:contactId', async (req, res, next) => {
     })
   }
 })
-
 router.put('/email/:contactId', async (req, res, next) => {
   try {
     const {email} = await joiEmail.validateAsync(req.body);
@@ -206,7 +181,6 @@ router.put('/email/:contactId', async (req, res, next) => {
     })
   }
 })
-
 router.put('/name/:contactId', async (req, res, next) => {
   try {
     const {name} = await joiName.validateAsync(req.body);
@@ -227,5 +201,4 @@ router.put('/name/:contactId', async (req, res, next) => {
     })
   }
 })
-
 module.exports = router
