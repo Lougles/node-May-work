@@ -2,12 +2,8 @@ const { ObjectID } = require('bson');
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
-const urlDB = process.env.DB_URL;
-const dbName = process.env.DB_NAME;
-const dbCollection = process.env.DB_COLLECTION;
-
+const modelsMiddleware = require("../../middlewares/models") 
+ 
 // const { result } = require('lodash');
 // const { isError } = require('joi');
 // const {Users } = require("../../db/collection");
@@ -42,38 +38,26 @@ const joiFavorite = Joi.object({
 const joiPhone = Joi.object({
   phone: Joi.string().required(),
 })
+
+router.use(modelsMiddleware);
+
 router.get('/', async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try{
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .find()
-    .toArray();
-    res.json({
+    const result = await req.db.Users.find({}).toArray();
+     res.json({
       status: 'success',
       data: result,
     })
   } catch (err) {
     res.status(500).json({message: "Some mistake", err})
     next(err);
-  }finally{
-    await client.close();
   }
 })
 
 router.get(`/:contactId`, async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const id = new ObjectID(req.params.contactId);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .findOne({_id: id}, {
+    const result = await req.db.Users.findOne({_id: id}, {
       name: 1,
       email: 1,
       phone: 1,
@@ -92,22 +76,13 @@ router.get(`/:contactId`, async (req, res, next) => {
       message: err.message
     })
     next(err);
-  }  finally {
-    await client.close();
   }
 })
 
 router.delete(`/:contactId`, async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const id = new ObjectID(req.params.contactId);
-    console.log(id);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .deleteOne({_id: id})
+    const result = await req.db.Users.deleteOne({_id: id})
     if(result){
       res.json({
         status: "success",
@@ -122,21 +97,13 @@ router.delete(`/:contactId`, async (req, res, next) => {
       error: error.message,
     })
     next(error);
-  }finally {
-    await client.close();
   }
 })
 
 router.post('/', async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const data = await schema.validateAsync(req.body);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .insertOne(data);
+    const result = await req.db.Users.insertOne(data);
     if(result){
       res.json({
        status: 'success',
@@ -151,21 +118,14 @@ router.post('/', async (req, res, next) => {
       error: err.message
     });
     next(err);
-  }finally {
-    await client.close();
   }
 })
 
 router.patch('/:contactId', async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const id = new ObjectID(req.params.contactId);
     const {name, email, phone, favorite} = await schema.validateAsync(req.body);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
+    const result = await req.db.Users
     .findOneAndUpdate({_id: id}, { $set: {name, email, phone, favorite}});
     if (result){
       res.json({
@@ -180,22 +140,15 @@ router.patch('/:contactId', async (req, res, next) => {
       status: 'fail',
       error: err.message,
     })
-  }finally {
-    await client.close();
   }
 })
 
 router.put('/favorite/:contactId', async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const {favorite} = await joiFavorite.validateAsync(req.body);
     const id = new ObjectID(req.params.contactId);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .findOneAndUpdate({_id: id},{ $set: {favorite}});
+    const result = await req.db.Users.
+    findOneAndUpdate({_id: id},{ $set: {favorite}});
     if (result) {
       res.json({
         status: "Success",
@@ -209,21 +162,14 @@ router.put('/favorite/:contactId', async (req, res, next) => {
       status: 'Fail',
       error: err.message
     })
-  }finally {
-    await client.close();
   }
 })
+
 router.put('/phone/:contactId', async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const {phone} = await joiPhone.validateAsync(req.body);
     const id = new ObjectID(req.params.contactId);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .findOneAndUpdate({_id: id},{ $set: {phone}});
+    const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {phone}});
     if (result) {
       res.json({
         status: "Success",
@@ -237,21 +183,14 @@ router.put('/phone/:contactId', async (req, res, next) => {
       status: 'Fail',
       error: err.message
     })
-  }finally {
-    await client.close();
   }
 })
+
 router.put('/email/:contactId', async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const {email} = await joiEmail.validateAsync(req.body);
     const id = new ObjectID(req.params.contactId);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .findOneAndUpdate({_id: id},{ $set: {email}});
+    const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {email}});
     if (result) {
       res.json({
         status: "Success",
@@ -265,21 +204,14 @@ router.put('/email/:contactId', async (req, res, next) => {
       status: 'Fail',
       error: err.message
     })
-  }finally {
-    await client.close();
   }
 })
+
 router.put('/name/:contactId', async (req, res, next) => {
-  const client = await new MongoClient(urlDB, {
-    useUnifiedTopology: true,
-  }).connect();
   try {
     const {name} = await joiName.validateAsync(req.body);
     const id = new ObjectID(req.params.contactId);
-    const result = await client
-    .db(dbName)
-    .collection(dbCollection)
-    .findOneAndUpdate({_id: id},{ $set: {name}});
+    const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {name}});
     if (result) {
       res.json({
         status: "Success",
@@ -293,8 +225,6 @@ router.put('/name/:contactId', async (req, res, next) => {
       status: 'Fail',
       error: err.message
     })
-  }finally {
-    await client.close();
   }
 })
 
