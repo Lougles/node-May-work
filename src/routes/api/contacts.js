@@ -25,7 +25,23 @@ const schema = Joi.object({
   phone: Joi.string().required(),
   favorite: Joi.boolean().required(),
 })
+const joiName = Joi.object({
+  name: Joi.string().alphanum().min(3).max(10).required(),
+})
+const joiEmail = Joi.object({
+  email: Joi.string().email({
+    minDomainSegments: 2, tlds: {
+      allow: ['com', 'net']
+    }
+  }).required()
+})
 
+const joiFavorite = Joi.object({
+  favorite: Joi.boolean().required(),
+})
+const joiPhone = Joi.object({
+  phone: Joi.string().required(),
+})
 router.get('/', async (req, res, next) => {
   const client = await new MongoClient(urlDB, {
     useUnifiedTopology: true,
@@ -169,6 +185,117 @@ router.patch('/:contactId', async (req, res, next) => {
   }
 })
 
-
+router.put('/favorite/:contactId', async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
+  try {
+    const {favorite} = await joiFavorite.validateAsync(req.body);
+    const id = new ObjectID(req.params.contactId);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .findOneAndUpdate({_id: id},{ $set: {favorite}});
+    if (result) {
+      res.json({
+        status: "Success",
+        data: result,
+      })
+    }else {
+      res.sendStatus(304);
+    }
+  } catch (err) {
+    res.json({
+      status: 'Fail',
+      error: err.message
+    })
+  }finally {
+    await client.close();
+  }
+})
+router.put('/phone/:contactId', async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
+  try {
+    const {phone} = await joiPhone.validateAsync(req.body);
+    const id = new ObjectID(req.params.contactId);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .findOneAndUpdate({_id: id},{ $set: {phone}});
+    if (result) {
+      res.json({
+        status: "Success",
+        data: result,
+      })
+    }else {
+      res.sendStatus(304);
+    }
+  } catch (err) {
+    res.json({
+      status: 'Fail',
+      error: err.message
+    })
+  }finally {
+    await client.close();
+  }
+})
+router.put('/email/:contactId', async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
+  try {
+    const {email} = await joiEmail.validateAsync(req.body);
+    const id = new ObjectID(req.params.contactId);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .findOneAndUpdate({_id: id},{ $set: {email}});
+    if (result) {
+      res.json({
+        status: "Success",
+        data: result,
+      })
+    }else {
+      res.sendStatus(304);
+    }
+  } catch (err) {
+    res.json({
+      status: 'Fail',
+      error: err.message
+    })
+  }finally {
+    await client.close();
+  }
+})
+router.put('/name/:contactId', async (req, res, next) => {
+  const client = await new MongoClient(urlDB, {
+    useUnifiedTopology: true,
+  }).connect();
+  try {
+    const {name} = await joiName.validateAsync(req.body);
+    const id = new ObjectID(req.params.contactId);
+    const result = await client
+    .db(dbName)
+    .collection(dbCollection)
+    .findOneAndUpdate({_id: id},{ $set: {name}});
+    if (result) {
+      res.json({
+        status: "Success",
+        data: result,
+      })
+    }else {
+      res.sendStatus(304);
+    }
+  } catch (err) {
+    res.json({
+      status: 'Fail',
+      error: err.message
+    })
+  }finally {
+    await client.close();
+  }
+})
 
 module.exports = router
