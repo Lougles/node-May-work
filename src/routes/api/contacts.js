@@ -8,9 +8,6 @@ const urlDB = process.env.DB_URL;
 const dbName = process.env.DB_NAME;
 const dbCollection = process.env.DB_COLLECTION;
 
-// const client = new MongoClient(urlDB, {
-//   useUnifiedTopology: true,
-// });
 // const { result } = require('lodash');
 // const { isError } = require('joi');
 // const {Users } = require("../../db/collection");
@@ -26,6 +23,7 @@ const schema = Joi.object({
     }
   }).required(),
   phone: Joi.string().required(),
+  favorite: Joi.boolean().required(),
 })
 
 router.get('/', async (req, res, next) => {
@@ -148,11 +146,11 @@ router.patch('/:contactId', async (req, res, next) => {
   }).connect();
   try {
     const id = new ObjectID(req.params.contactId);
-    const {name, email, phone} = await schema.validateAsync(req.body);
+    const {name, email, phone, favorite} = await schema.validateAsync(req.body);
     const result = await client
     .db(dbName)
     .collection(dbCollection)
-    .findOneAndUpdate({_id: id}, { $set: {name, email, phone}});
+    .findOneAndUpdate({_id: id}, { $set: {name, email, phone, favorite}});
     if (result){
       res.json({
         status: "success",
@@ -170,5 +168,7 @@ router.patch('/:contactId', async (req, res, next) => {
     await client.close();
   }
 })
+
+
 
 module.exports = router
