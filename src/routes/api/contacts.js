@@ -1,24 +1,13 @@
 const { ObjectID } = require('bson');
-const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
-const {joiName, joiEmail, joiPhone, joiFavorite} = require('../../middlewares/validation');
+const {schema, joiName, joiEmail, joiPhone, joiFavorite} = require('../../middlewares/validation');
 const modelsMiddleware = require("../../middlewares/models");
 
 // const { result } = require('lodash');
 // const { isError } = require('joi');
 // const { mod } = require('prelude-ls');
 
-const schema = Joi.object({
-  name: Joi.string().alphanum().min(3).max(10).required(),
-  email: Joi.string().email({
-    minDomainSegments: 2, tlds: {
-      allow: ['com', 'net']
-    }
-  }).required(),
-  phone: Joi.string().required(),
-  favorite: Joi.boolean().required(),
-})
 router.use(modelsMiddleware);
 
 router.get('/', async (req, res, next) => {
@@ -29,8 +18,7 @@ router.get('/', async (req, res, next) => {
       data: result,
     })
   } catch (err) {
-    res.status(500).json({message: "Some mistake", err})
-    next(err);
+    res.status(500).json({message: "Some mistake", err});
   }
 })
 router.get(`/:contactId`, async (req, res, next) => {
@@ -54,7 +42,6 @@ router.get(`/:contactId`, async (req, res, next) => {
       status: 'mistake',
       message: err.message
     })
-    next(err);
   }
 })
 router.delete(`/:contactId`, async (req, res, next) => {
@@ -67,14 +54,15 @@ router.delete(`/:contactId`, async (req, res, next) => {
         data: result,
       })
     }else {
-      res.sendStatus(404);
+      res.sendStatus(404).json({
+        status: "Not Found"
+      });
     }
   } catch (err) {
     res.json({
       status: 'fail',
       error: error.message,
     })
-    next(error);
   }
 })
 router.post('/', async (req, res, next) => {
@@ -92,11 +80,10 @@ router.post('/', async (req, res, next) => {
       })
     }
   } catch (err) {
-    res.status(404).json({
+    res.json({
       status: "Fail",
       error: err.message
     });
-    next(err);
   }
 })
 router.patch('/:contactId', async (req, res, next) => {
