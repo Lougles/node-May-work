@@ -1,12 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const {getUsers, getUserbyId, deleteUser, postUser, updateAllfields,updateFavorite,  updatePhone, updateEmail, updateName} = require('../../controllers/usersController')
-const modelsMiddleware = require("../../middlewares/models");
 const {asyncWrapper} = require('../../helpers/apiHelpers')
 
 // const { result } = require('lodash');
 
-router.use(modelsMiddleware);
 router.get('/', asyncWrapper(getUsers));
 router.get(`/:contactId`, asyncWrapper(getUserbyId));
 router.delete(`/:contactId`, asyncWrapper(deleteUser));
