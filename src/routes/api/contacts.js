@@ -1,19 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const {getUsers, getUserbyId, deleteUser, postUser, updateAllfields,updateFavorite,  updatePhone, updateEmail, updateName} = require('../../controllers/usersController')
-const {asyncWrapper} = require('../../helpers/apiHelpers')
+const {asyncWrapper} = require('../../helpers/trycatchHelper');
 
-// const { result } = require('lodash');
 
 router.get('/', asyncWrapper(getUsers));
-router.get(`/:contactId`, asyncWrapper(getUserbyId));
-router.delete(`/:contactId`, asyncWrapper(deleteUser));
+router.get(`/:id`, asyncWrapper(getUserbyId));
+router.delete(`/:id`, asyncWrapper(deleteUser));
 router.post('/', asyncWrapper(postUser));
-router.patch('/:contactId', asyncWrapper(updateAllfields));
-router.put('/favorite/:contactId', asyncWrapper(updateFavorite));
-router.put('/phone/:contactId', asyncWrapper(updatePhone));
-router.put('/email/:contactId', asyncWrapper(updateEmail));
-router.put('/name/:contactId', asyncWrapper(updateName));
+router.patch('/:id', asyncWrapper(updateAllfields));
+router.put('/favorite/:id', asyncWrapper(updateFavorite));
+router.put('/phone/:id', asyncWrapper(updatePhone));
+router.put('/email/:id', asyncWrapper(updateEmail));
+router.put('/name/:id', asyncWrapper(updateName));
 
 
 module.exports = router

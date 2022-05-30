@@ -1,6 +1,13 @@
+const {
+  schema,
+  joiName,
+  joiEmail,
+  joiFavorite,
+  joiPhone
+} = require('../middlewares/validation');
 const {User} = require('../db/userModel')
 
-const getUsers = async (req, res, next) => {
+const getUsers = async (req, res) => {
   const result = await User.find({});
     res.json({
     status: 'success',
@@ -9,22 +16,17 @@ const getUsers = async (req, res, next) => {
 }
 
 const getUserbyId = async (req, res) => {
-  // const id = new ObjectID(req.params.contactId);
-  // const result = await req.db.Users.findOne({_id: id}, {
-  //   name: 1,
-  //   email: 1,
-  //   phone: 1,
-  // });
-  // if(result){
-  //   res.json({
-  //     status: "success",
-  //     data: result
-  //   })
-  // }else{
-  //   res.status(404).json({
-  //     status: "Not Found"
-  //   });
-  // }
+  const {id} = req.params;
+  const user = await User.findById(id);
+  if(!user) {
+    return res.status(404).json({
+      status: `Fail, id: ${id} is not exist.`
+    });
+  }
+  res.json({
+    status: "success",
+    data: user
+  })
 }
 
 const deleteUser = async (req, res) => {
@@ -43,7 +45,12 @@ const deleteUser = async (req, res) => {
 }
 
 const postUser = async (req, res) => {
-  // const {name, email, phone, favorite} = await schema.validateAsync(req.body);
+  const {name, email, phone, favorite } = req.body;
+  const user = new User({name, email, phone, favorite});
+  await user.save();
+  res.json({
+    status: "success"
+  });
   // const result = await req.db.Users.insertOne(data);
   // if(result){
   //   res.json({
