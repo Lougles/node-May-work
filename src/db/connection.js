@@ -1,10 +1,7 @@
 const { MongoClient } = require('mongodb');
 require('dotenv').config()
+const {url, dbName, dbCollection} = process.env;
 const collections = {};
-require('dotenv').config()
-const url = process.env.DB_URL;
-const dbName = process.env.DB_NAME;
-const dbCollection = process.env.DB_COLLECTION;
 
 const getCollection = () => {
   return collections;
