@@ -30,18 +30,17 @@ const getUserbyId = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-  // const id = new ObjectID(req.params.contactId);
-  // const result = await req.db.Users.remove({_id: id})
-  // if(result){
-  //   res.json({
-  //     status: "success",
-  //     data: result,
-  //   })
-  // }else {
-  //   res.status(404).json({
-  //     status: "Not Found"
-  //   });
-  // }
+  const {id} = req.params;
+  const result = await User.findByIdAndRemove(id);
+  if (!result){
+    res.status(400).json({
+      status: "Bad request"
+    });
+  }
+  res.json({
+    status: "Success",
+    data: result,
+  })
 }
 
 const postUser = async (req, res) => {
