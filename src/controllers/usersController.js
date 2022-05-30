@@ -5,139 +5,105 @@ const {
   joiFavorite,
   joiPhone
 } = require('../middlewares/validation');
-const {User} = require('../db/userModel')
 
-const getUsers = async (req, res) => {
-  const result = await User.find({});
-    res.json({
+const {
+  getUsers,
+  getUserById,
+  addUser,
+  updateName,
+  updateEmail,
+  updatePhone,
+  updateFavorite,
+  updateAllFields,
+  deleteUserById
+} = require('../services/userService');
+
+const getUsersController = async (req, res) => {
+  const result = await getUsers();
+  res.json({
     status: 'success',
     data: result,
   })
 }
 
-const getUserbyId = async (req, res) => {
+const getUserbyIdController = async (req, res) => {
   const {id} = req.params;
-  const user = await User.findById(id);
-  if(!user) {
-    return res.status(404).json({
-      status: `Fail, id: ${id} is not exist.`
-    });
-  }
+  const result = await getUserById(id);
   res.json({
     status: "success",
-    data: user
+    data: result
   })
 }
 
-const deleteUser = async (req, res) => {
-  const {id} = req.params;
-  const result = await User.findByIdAndRemove(id);
-  if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
-  }
-  res.json({
-    status: "Success",
-    data: result,
-  })
-}
-
-const postUser = async (req, res) => {
+const postUserController = async (req, res) => {
   const {name, email, phone, favorite} = await schema.validateAsync(req.body);
-  const user = new User({name, email, phone, favorite});
-  await user.save();
+  const result = await addUser({name, email, phone, favorite});
   res.json({
-    status: "success"
+    status: "success",
   });
 }
 
-const updateAllfields = async (req, res) => {
-  const {id} = req.params;
-  const {name, email, phone, favorite} = await schema.validateAsync(req.body);
-  const result = await User.findByIdAndUpdate(id, { $set: {name, email, phone, favorite}});
-  if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
-  }
-  res.json({
-    status: "Success",
-    data: result,
-  })
-}
-
-const updateFavorite = async (req, res) => {
-  const {id} = req.params;
-  const {favorite} = await joiFavorite.validateAsync(req.body);
-  const result = await User.findByIdAndUpdate(id,{ $set: {favorite}});
-  if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
-  }
-  res.json({
-    status: "Success",
-    data: result,
-  })
-}
-
-const updatePhone = async (req, res) => {
-  const {id} = req.params;
-  const {phone} = await joiPhone.validateAsync(req.body);
-  const result = await User.findByIdAndUpdate(id,{ $set: {phone}});
-  if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
-  }
-  res.json({
-    status: "Success",
-    data: result,
-  })
-}
-
-const updateEmail = async (req, res) => {
-  const {id} = req.params;
-  const {email} = await joiEmail.validateAsync(req.body);
-  const result = await User.findByIdAndUpdate(id,{ $set: {email}});
-  if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
-  }
-  res.json({
-    status: "Success",
-    data: result,
-  })
-}
-
-const updateName = async (req, res) => {
+const updateNameController = async (req, res) => {
   const {id} = req.params;
   const {name} = await joiName.validateAsync(req.body);
-  const result = await User.findByIdAndUpdate(id,{ $set: {name}});
-  if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
-  }
+  const result = await updateName(id, {name})
   res.json({
     status: "Success",
-    data: result,
   })
 }
 
+const updateEmailController = async (req, res) => {
+  const {id} = req.params;
+  const {email} = await joiEmail.validateAsync(req.body);
+  const result = await updateEmail(id, {email});
+  res.json({
+    status: "Success",
+  })
+}
 
+const updatePhoneController = async (req, res) => {
+  const {id} = req.params;
+  const {phone} = await joiPhone.validateAsync(req.body);
+  const result = await updatePhone(id, {phone});
+  res.json({
+    status: "Success",
+  })
+}
 
+const updateFavoriteController = async (req, res) => {
+  const {id} = req.params;
+  const {favorite} = await joiFavorite.validateAsync(req.body);
+  const result = await updateFavorite(id, {favorite});
+  res.json({
+    status: "Success",
+  })
+}
+
+const updateAllfieldsController = async (req, res) => {
+  const {id} = req.params;
+  const {name, email, phone, favorite} = await schema.validateAsync(req.body);
+  const result = await updateAllFields(id, {$set: {name, email, phone, favorite }});
+  res.json({
+    status: "Success",
+  })
+}
+
+const deleteUserController = async (req, res) => {
+  const {id} = req.params;
+  const result = await deleteUserById(id);
+  res.json({
+    status: "Success",
+  })
+}
 
 module.exports = {
-  getUsers,
-  getUserbyId,
-  deleteUser,
-  postUser,
-  updateAllfields,
-  updateFavorite,  
-  updatePhone,
-  updateEmail,
-  updateName,
+  getUsersController,
+  getUserbyIdController,
+  deleteUserController,
+  postUserController,
+  updateAllfieldsController,
+  updateFavoriteController,  
+  updatePhoneController,
+  updateEmailController,
+  updateNameController,
 }
