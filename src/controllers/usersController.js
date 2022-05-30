@@ -69,60 +69,63 @@ const updateAllfields = async (req, res) => {
 }
 
 const updateFavorite = async (req, res) => {
-  // const {favorite} = await joiFavorite.validateAsync(req.body);
-  // const id = new ObjectID(req.params.contactId);
-  // const result = await req.db.Users.
-  // findOneAndUpdate({_id: id},{ $set: {favorite}});
-  // if (result) {
-  //   res.json({
-  //     status: "Success",
-  //     data: result,
-  //   })
-  // }else {
-  //   res.sendStatus(304);
-  // }
+  const {id} = req.params;
+  const {favorite} = await joiFavorite.validateAsync(req.body);
+  const result = await User.findByIdAndUpdate(id,{ $set: {favorite}});
+  if (!result){
+    res.status(400).json({
+      status: "Bad request"
+    });
+  }
+  res.json({
+    status: "Success",
+    data: result,
+  })
 }
 
 const updatePhone = async (req, res) => {
-  // const {phone} = await joiPhone.validateAsync(req.body);
-  // const id = new ObjectID(req.params.contactId);
-  // const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {phone}});
-  // if (result) {
-  //   res.json({
-  //     status: "Success",
-  //     data: result,
-  //   })
-  // }else {
-  //   res.sendStatus(304);
-  // }
+  const {id} = req.params;
+  const {phone} = await joiPhone.validateAsync(req.body);
+  const result = await User.findByIdAndUpdate(id,{ $set: {phone}});
+  if (!result){
+    res.status(400).json({
+      status: "Bad request"
+    });
+  }
+  res.json({
+    status: "Success",
+    data: result,
+  })
 }
 
 const updateEmail = async (req, res) => {
-  // const {email} = await joiEmail.validateAsync(req.body);
-  // const id = new ObjectID(req.params.contactId);
-  // const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {email}});
-  // if (result) {
-  //   res.json({
-  //     status: "Success",
-  //     data: result,
-  //   })
-  // }else {
-  //   res.sendStatus(304);
-  // }
+  const {id} = req.params;
+  const {email} = await joiEmail.validateAsync(req.body);
+  const result = await User.findByIdAndUpdate(id,{ $set: {email}});
+  if (!result){
+    res.status(400).json({
+      status: "Bad request"
+    });
+  }
+  res.json({
+    status: "Success",
+    data: result,
+  })
 }
 
 const updateName = async (req, res) => {
-  // const {name} = await joiName.validateAsync(req.body);
-  // const id = new ObjectID(req.params.contactId);
-  // const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {name}});
-  // if (result) {
-  //   res.json({
-  //     status: "Success",
-  //     data: result,
-  //   })
-  // }else {
-  //   res.sendStatus(304);
-  // }
+  const {id} = req.params;
+  const {name} = await joiName.validateAsync(req.body);
+  const result = await User.findByIdAndUpdate(id,{ $set: {name}});
+  if (!result){
+    res.status(400).json({
+      status: "Bad request"
+    });
+  }
+  res.json({
+    status: "Success",
+    data: result,
+  })
 }
 
 
