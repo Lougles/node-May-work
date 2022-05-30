@@ -51,32 +51,21 @@ const postUser = async (req, res) => {
   res.json({
     status: "success"
   });
-  // const result = await req.db.Users.insertOne(data);
-  // if(result){
-  //   res.json({
-  //     status: 'success',
-  //     data: result
-  //   })
-  // }else {
-  //   res.json({
-  //     status: "Fail",
-  //   })
-  // }
 }
 
 const updateAllfields = async (req, res) => {
-  // const id = new ObjectID(req.params.contactId);
-  // const {name, email, phone, favorite} = await schema.validateAsync(req.body);
-  // const result = await req.db.Users
-  // .findOneAndUpdate({_id: id}, { $set: {name, email, phone, favorite}});
-  // if (result){
-  //   res.json({
-  //     status: "Success",
-  //     data: result,
-  //   })
-  // }else {
-  //   res.sendStatus(304);
-  // }
+  const {id} = req.params;
+  const {name, email, phone, favorite} = await schema.validateAsync(req.body);
+  const result = await User.findByIdAndUpdate(id, { $set: {name, email, phone, favorite}});
+  if (!result){
+    res.status(400).json({
+      status: "Bad request"
+    });
+  }
+  res.json({
+    status: "Success",
+    data: result,
+  })
 }
 
 const updateFavorite = async (req, res) => {
