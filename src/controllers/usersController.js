@@ -45,7 +45,7 @@ const deleteUser = async (req, res) => {
 }
 
 const postUser = async (req, res) => {
-  const {name, email, phone, favorite } = req.body;
+  const {name, email, phone, favorite} = await schema.validateAsync(req.body);
   const user = new User({name, email, phone, favorite});
   await user.save();
   res.json({
