@@ -1,5 +1,5 @@
-const {User} = require('../db/userModel')
-
+const {User} = require('../db/userModel');
+const {WrongIdError} = require('../helpers/errors')
 
 const getUsers = async () => {
   const result = await User.find({});
@@ -9,9 +9,7 @@ const getUsers = async () => {
 const getUserById = async (id) => {
   const result = await User.findById(id);
   if(!result) {
-    return res.status(404).json({
-      status: `Fail, id: ${id} is not exist.`
-    });
+    throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
   return result;
 };
@@ -25,18 +23,15 @@ const addUser = async ({name, email, phone, favorite}) => {
 const updateName = async (id, {name}) => {
   const result = await User.findByIdAndUpdate(id,{ $set: {name}});
   if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
+    throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
   return result;
 };
+
 const updateEmail = async (id, {email}) => {
   const result = await User.findByIdAndUpdate(id,{ $set: {email}});
   if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
+    throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
   return result;
 };
@@ -44,9 +39,7 @@ const updateEmail = async (id, {email}) => {
 const updatePhone = async (id, {phone}) => {
   const result = await User.findByIdAndUpdate(id,{ $set: {phone}});
   if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
+    throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
   return result;
 };
@@ -54,9 +47,7 @@ const updatePhone = async (id, {phone}) => {
 const updateFavorite = async (id, {favorite}) => {
   const result = await User.findByIdAndUpdate(id,{ $set: {favorite}});
   if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
+    throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
   return result;
 };
@@ -64,9 +55,7 @@ const updateFavorite = async (id, {favorite}) => {
 const updateAllFields = async (id, {name, email, phone, favorite}) => {
   const result = await User.findByIdAndUpdate(id, { $set: {name, email, phone, favorite}});
   if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
+    throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
   return result;
 };
@@ -74,13 +63,10 @@ const updateAllFields = async (id, {name, email, phone, favorite}) => {
 const deleteUserById = async (id) => {
   const result = await User.findByIdAndRemove(id);
   if (!result){
-    res.status(400).json({
-      status: "Bad request"
-    });
+    throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
   return result;
 };
-
 
 module.exports = {
   getUsers,

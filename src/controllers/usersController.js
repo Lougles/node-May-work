@@ -1,12 +1,4 @@
 const {
-  schema,
-  joiName,
-  joiEmail,
-  joiFavorite,
-  joiPhone
-} = require('../middlewares/validation');
-
-const {
   getUsers,
   getUserById,
   addUser,
@@ -36,8 +28,8 @@ const getUserbyIdController = async (req, res) => {
 }
 
 const postUserController = async (req, res) => {
-  const {name, email, phone, favorite} = await schema.validateAsync(req.body);
-  const result = await addUser({name, email, phone, favorite});
+  const {name, email, phone, favorite} = req.body;
+  await addUser({name, email, phone, favorite});
   res.json({
     status: "success",
   });
@@ -45,8 +37,8 @@ const postUserController = async (req, res) => {
 
 const updateNameController = async (req, res) => {
   const {id} = req.params;
-  const {name} = await joiName.validateAsync(req.body);
-  const result = await updateName(id, {name})
+  const {name} = req.body;
+  await updateName(id, {name})
   res.json({
     status: "Success",
   })
@@ -54,8 +46,8 @@ const updateNameController = async (req, res) => {
 
 const updateEmailController = async (req, res) => {
   const {id} = req.params;
-  const {email} = await joiEmail.validateAsync(req.body);
-  const result = await updateEmail(id, {email});
+  const {email} = req.body;
+  await updateEmail(id, {email});
   res.json({
     status: "Success",
   })
@@ -63,8 +55,8 @@ const updateEmailController = async (req, res) => {
 
 const updatePhoneController = async (req, res) => {
   const {id} = req.params;
-  const {phone} = await joiPhone.validateAsync(req.body);
-  const result = await updatePhone(id, {phone});
+  const {phone} = req.body;
+  await updatePhone(id, {phone});
   res.json({
     status: "Success",
   })
@@ -72,8 +64,8 @@ const updatePhoneController = async (req, res) => {
 
 const updateFavoriteController = async (req, res) => {
   const {id} = req.params;
-  const {favorite} = await joiFavorite.validateAsync(req.body);
-  const result = await updateFavorite(id, {favorite});
+  const {favorite} = req.body;
+  await updateFavorite(id, {favorite});
   res.json({
     status: "Success",
   })
@@ -81,8 +73,8 @@ const updateFavoriteController = async (req, res) => {
 
 const updateAllfieldsController = async (req, res) => {
   const {id} = req.params;
-  const {name, email, phone, favorite} = await schema.validateAsync(req.body);
-  const result = await updateAllFields(id, {$set: {name, email, phone, favorite }});
+  const {name, email, phone, favorite} = req.body;
+  await updateAllFields(id, {$set: {name, email, phone, favorite }});
   res.json({
     status: "Success",
   })
@@ -90,7 +82,7 @@ const updateAllfieldsController = async (req, res) => {
 
 const deleteUserController = async (req, res) => {
   const {id} = req.params;
-  const result = await deleteUserById(id);
+  await deleteUserById(id);
   res.json({
     status: "Success",
   })
