@@ -1,21 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const {getUsers, getUserbyId, deleteUser, postUser, updateAllfields,updateFavorite,  updatePhone, updateEmail, updateName} = require('../../controllers/usersController')
-const modelsMiddleware = require("../../middlewares/models");
-const {asyncWrapper} = require('../../helpers/apiHelpers')
+const {
+  getUsersController, 
+  getUserbyIdController, 
+  deleteUserController, 
+  postUserController, 
+  updateAllfieldsController,
+  updateFavoriteController,  
+  updatePhoneController, 
+  updateEmailController, 
+  updateNameController
+} = require('../../controllers/usersController')
+const {asyncWrapper} = require('../../helpers/trycatchHelper');
+const {
+  addUserValidation, 
+  updateNameValidation, 
+  updateEmailValidation, 
+  updatePhoneValidation, 
+  updateFavoriteValidation
+} = require('../../middlewares/validation')
 
-// const { result } = require('lodash');
 
-router.use(modelsMiddleware);
-router.get('/', asyncWrapper(getUsers));
-router.get(`/:contactId`, asyncWrapper(getUserbyId));
-router.delete(`/:contactId`, asyncWrapper(deleteUser));
-router.post('/', asyncWrapper(postUser));
-router.patch('/:contactId', asyncWrapper(updateAllfields));
-router.put('/favorite/:contactId', asyncWrapper(updateFavorite));
-router.put('/phone/:contactId', asyncWrapper(updatePhone));
-router.put('/email/:contactId', asyncWrapper(updateEmail));
-router.put('/name/:contactId', asyncWrapper(updateName));
+router.get('/', asyncWrapper(getUsersController));
+router.get(`/:id`, asyncWrapper(getUserbyIdController));
+router.post('/', addUserValidation, asyncWrapper(postUserController));
+router.put('/name/:id', updateNameValidation, asyncWrapper(updateNameController ));
+router.put('/email/:id', updateEmailValidation, asyncWrapper(updateEmailController));
+router.put('/phone/:id', updatePhoneValidation, asyncWrapper(updatePhoneController));
+router.put('/favorite/:id', updateFavoriteValidation, asyncWrapper(updateFavoriteController));
+router.patch('/:id', addUserValidation, asyncWrapper(updateAllfieldsController));
+router.delete(`/:id`, asyncWrapper(deleteUserController));
 
 
 module.exports = router

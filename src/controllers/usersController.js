@@ -1,148 +1,101 @@
-const {schema, joiName, joiEmail, joiPhone, joiFavorite} = require('../middlewares/validation');
-const { ObjectID } = require('bson');
+const {
+  getUsers,
+  getUserById,
+  addUser,
+  updateName,
+  updateEmail,
+  updatePhone,
+  updateFavorite,
+  updateAllFields,
+  deleteUserById
+} = require('../services/userService');
 
-
-const getUsers = async (req, res, next) => {
-  const result = await req.db.Users.find({}).toArray();
-    res.json({
+const getUsersController = async (req, res) => {
+  const result = await getUsers();
+  res.json({
     status: 'success',
     data: result,
   })
 }
 
-const getUserbyId = async (req, res, next) => {
-  const id = new ObjectID(req.params.contactId);
-  const result = await req.db.Users.findOne({_id: id}, {
-    name: 1,
-    email: 1,
-    phone: 1,
+const getUserbyIdController = async (req, res) => {
+  const {id} = req.params;
+  const result = await getUserById(id);
+  res.json({
+    status: "success",
+    data: result
+  })
+}
+
+const postUserController = async (req, res) => {
+  const {name, email, phone, favorite} = req.body;
+  await addUser({name, email, phone, favorite});
+  res.json({
+    status: "success",
   });
-  if(result){
-    res.json({
-      status: "success",
-      data: result
-    })
-  }else{
-    res.status(404).json({
-      status: "Not Found"
-    });
-  }
 }
 
-const deleteUser = async (req, res, next) => {
-  const id = new ObjectID(req.params.contactId);
-  const result = await req.db.Users.remove({_id: id})
-  if(result){
-    res.json({
-      status: "success",
-      data: result,
-    })
-  }else {
-    res.status(404).json({
-      status: "Not Found"
-    });
-  }
+const updateNameController = async (req, res) => {
+  const {id} = req.params;
+  const {name} = req.body;
+  await updateName(id, {name})
+  res.json({
+    status: "Success",
+  })
 }
 
-const postUser = async (req, res, next) => {
-  const data = await schema.validateAsync(req.body);
-  const result = await req.db.Users.insertOne(data);
-  if(result){
-    res.json({
-      status: 'success',
-      data: result
-    })
-  }else {
-    res.json({
-      status: "Fail",
-    })
-  }
+const updateEmailController = async (req, res) => {
+  const {id} = req.params;
+  const {email} = req.body;
+  await updateEmail(id, {email});
+  res.json({
+    status: "Success",
+  })
 }
 
-const updateAllfields = async (req, res, next) => {
-  const id = new ObjectID(req.params.contactId);
-  const {name, email, phone, favorite} = await schema.validateAsync(req.body);
-  const result = await req.db.Users
-  .findOneAndUpdate({_id: id}, { $set: {name, email, phone, favorite}});
-  if (result){
-    res.json({
-      status: "Success",
-      data: result,
-    })
-  }else {
-    res.sendStatus(304);
-  }
+const updatePhoneController = async (req, res) => {
+  const {id} = req.params;
+  const {phone} = req.body;
+  await updatePhone(id, {phone});
+  res.json({
+    status: "Success",
+  })
 }
 
-const updateFavorite = async (req, res, next) => {
-  const {favorite} = await joiFavorite.validateAsync(req.body);
-  const id = new ObjectID(req.params.contactId);
-  const result = await req.db.Users.
-  findOneAndUpdate({_id: id},{ $set: {favorite}});
-  if (result) {
-    res.json({
-      status: "Success",
-      data: result,
-    })
-  }else {
-    res.sendStatus(304);
-  }
+const updateFavoriteController = async (req, res) => {
+  const {id} = req.params;
+  const {favorite} = req.body;
+  await updateFavorite(id, {favorite});
+  res.json({
+    status: "Success",
+  })
 }
 
-const updatePhone = async (req, res, next) => {
-  const {phone} = await joiPhone.validateAsync(req.body);
-  const id = new ObjectID(req.params.contactId);
-  const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {phone}});
-  if (result) {
-    res.json({
-      status: "Success",
-      data: result,
-    })
-  }else {
-    res.sendStatus(304);
-  }
+const updateAllfieldsController = async (req, res) => {
+  const {id} = req.params;
+  const {name, email, phone, favorite} = req.body;
+  await updateAllFields(id, {$set: {name, email, phone, favorite }});
+  res.json({
+    status: "Success",
+  })
 }
 
-const updateEmail = async (req, res, next) => {
-  const {email} = await joiEmail.validateAsync(req.body);
-  const id = new ObjectID(req.params.contactId);
-  const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {email}});
-  if (result) {
-    res.json({
-      status: "Success",
-      data: result,
-    })
-  }else {
-    res.sendStatus(304);
-  }
+const deleteUserController = async (req, res) => {
+  const {id} = req.params;
+  await deleteUserById(id);
+  res.json({
+    status: "Success",
+  })
 }
-
-const updateName = async (req, res, next) => {
-  const {name} = await joiName.validateAsync(req.body);
-  const id = new ObjectID(req.params.contactId);
-  const result = await req.db.Users.findOneAndUpdate({_id: id},{ $set: {name}});
-  if (result) {
-    res.json({
-      status: "Success",
-      data: result,
-    })
-  }else {
-    res.sendStatus(304);
-  }
-}
-
-
-
 
 module.exports = {
-  getUsers,
-  getUserbyId,
-  deleteUser,
-  postUser,
-  updateAllfields,
-  updateFavorite,  
-  updatePhone,
-  updateEmail,
-  updateName,
-
+  getUsersController,
+  getUserbyIdController,
+  deleteUserController,
+  postUserController,
+  updateAllfieldsController,
+  updateFavoriteController,  
+  updatePhoneController,
+  updateEmailController,
+  updateNameController,
 }
