@@ -1,8 +1,8 @@
 const {Contact} = require('../db/contactsModel');
 const {WrongIdError} = require('../helpers/errors')
 
-const getUsers = async () => {
-  const result = await Contact.find({});
+const getUsers = async (owner) => {
+  const result = await Contact.find({owner});
   return result;
 };
 
@@ -14,8 +14,8 @@ const getUserById = async (id) => {
   return result;
 };
 
-const addUser = async ({name, email, phone, favorite}) => {
-  const result = new Contact({name, email, phone, favorite});
+const addUser = async ({name, email, phone, favorite}, owner) => {
+  const result = new Contact({name, email, phone, favorite, owner});
   await result.save();
   return result;
 };

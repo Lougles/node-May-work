@@ -21,6 +21,10 @@ const contactSchema = new mongoose.Schema({
     type: Date,
     default: Date.now()
   },
+  owner: {
+    type: String,
+    required: true
+  }
 });
 
 const Contact = mongoose.model('Contact', contactSchema);

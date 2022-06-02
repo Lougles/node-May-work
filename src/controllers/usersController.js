@@ -12,7 +12,8 @@ const {
 
 const getUsersController = async (req, res) => {
   console.log(req.user);
-  const result = await getUsers();
+  const {_id} = req.user;
+  const result = await getUsers(_id);
   res.json({
     status: 'success',
     data: result,
@@ -30,7 +31,8 @@ const getUserbyIdController = async (req, res) => {
 
 const postUserController = async (req, res) => {
   const {name, email, phone, favorite} = req.body;
-  await addUser({name, email, phone, favorite});
+  const {_id} = req.user;
+  await addUser({name, email, phone, favorite}, _id);
   res.json({
     status: "success",
   });
