@@ -11,6 +11,7 @@ const {
 } = require('../services/contactService');
 
 const getUsersController = async (req, res) => {
+  console.log(req.user);
   const result = await getUsers();
   res.json({
     status: 'success',

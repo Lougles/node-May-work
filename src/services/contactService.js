@@ -1,13 +1,13 @@
-const {User} = require('../db/contactsModel');
+const {Contact} = require('../db/contactsModel');
 const {WrongIdError} = require('../helpers/errors')
 
 const getUsers = async () => {
-  const result = await User.find({});
+  const result = await Contact.find({});
   return result;
 };
 
 const getUserById = async (id) => {
-  const result = await User.findById(id);
+  const result = await Contact.findById(id);
   if(!result) {
     throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
@@ -15,13 +15,13 @@ const getUserById = async (id) => {
 };
 
 const addUser = async ({name, email, phone, favorite}) => {
-  const result = new User({name, email, phone, favorite});
+  const result = new Contact({name, email, phone, favorite});
   await result.save();
   return result;
 };
 
 const updateName = async (id, {name}) => {
-  const result = await User.findByIdAndUpdate(id,{ $set: {name}});
+  const result = await Contact.findByIdAndUpdate(id,{ $set: {name}});
   if (!result){
     throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
@@ -29,7 +29,7 @@ const updateName = async (id, {name}) => {
 };
 
 const updateEmail = async (id, {email}) => {
-  const result = await User.findByIdAndUpdate(id,{ $set: {email}});
+  const result = await Contact.findByIdAndUpdate(id,{ $set: {email}});
   if (!result){
     throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
@@ -37,7 +37,7 @@ const updateEmail = async (id, {email}) => {
 };
 
 const updatePhone = async (id, {phone}) => {
-  const result = await User.findByIdAndUpdate(id,{ $set: {phone}});
+  const result = await Contact.findByIdAndUpdate(id,{ $set: {phone}});
   if (!result){
     throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
@@ -45,7 +45,7 @@ const updatePhone = async (id, {phone}) => {
 };
 
 const updateFavorite = async (id, {favorite}) => {
-  const result = await User.findByIdAndUpdate(id,{ $set: {favorite}});
+  const result = await Contact.findByIdAndUpdate(id,{ $set: {favorite}});
   if (!result){
     throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
@@ -53,7 +53,7 @@ const updateFavorite = async (id, {favorite}) => {
 };
 
 const updateAllFields = async (id, {name, email, phone, favorite}) => {
-  const result = await User.findByIdAndUpdate(id, { $set: {name, email, phone, favorite}});
+  const result = await Contact.findByIdAndUpdate(id, { $set: {name, email, phone, favorite}});
   if (!result){
     throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
@@ -61,7 +61,7 @@ const updateAllFields = async (id, {name, email, phone, favorite}) => {
 };
 
 const deleteUserById = async (id) => {
-  const result = await User.findByIdAndRemove(id);
+  const result = await Contact.findByIdAndRemove(id);
   if (!result){
     throw new WrongIdError(`Fail, id: ${id} is not exist.`);
   }
