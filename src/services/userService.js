@@ -1,4 +1,4 @@
-const {User} = require('../db/userModel');
+const {User} = require('../db/contactsModel');
 const {WrongIdError} = require('../helpers/errors')
 
 const getUsers = async () => {
