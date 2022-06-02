@@ -1,5 +1,5 @@
 const express = require('express');
-const auth = express.Router();
+const router = express.Router();
 const {
   registrationController,
   loginController
@@ -11,5 +11,4 @@ router.post('/registration', asyncWrapper(registrationController));
 router.post('/login', asyncWrapper(loginController));
 
 
-
-module.exports = auth
+module.exports = router

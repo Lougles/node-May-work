@@ -8,7 +8,7 @@ const {
   updateFavorite,
   updateAllFields,
   deleteUserById
-} = require('../services/userService');
+} = require('../services/contactService');
 
 const getUsersController = async (req, res) => {
   const result = await getUsers();
