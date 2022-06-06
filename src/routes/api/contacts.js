@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 const {
   getUsersController, 
   getUserbyIdController, 
@@ -19,8 +19,10 @@ const {
   updatePhoneValidation, 
   updateFavoriteValidation
 } = require('../../middlewares/validation')
+const {authMiddleware} = require('../../middlewares/authMiddleware');
 
 
+router.use(authMiddleware);
 router.get('/', asyncWrapper(getUsersController));
 router.get(`/:id`, asyncWrapper(getUserbyIdController));
 router.post('/', addUserValidation, asyncWrapper(postUserController));

@@ -32,35 +32,35 @@ const joiPhone = Joi.object({
 const addUserValidation = (req, res, next) => {
   const validationResult = schema.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(validationResult.error));
+    next(new validationError(JSON.stringify(validationResult.error.details)));
   }
   next();
 }
 const updateNameValidation = (req, res, next) => {
   const validationResult = joiName.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(validationResult.error));
+    next(new validationError(JSON.stringify(validationResult.error.details)));
   }
   next();
 }
 const updateEmailValidation = (req, res, next) => {
   const validationResult = joiEmail.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(validationResult.error));
+    next(new validationError(JSON.stringify(validationResult.error.details)));
   }
   next();
 }
 const updatePhoneValidation = (req, res, next) => {
   const validationResult = joiPhone.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(validationResult.error));
+    next(new validationError(JSON.stringify(validationResult.error.details)));
   }
   next();
 }
 const updateFavoriteValidation = (req, res, next) => {
   const validationResult = joiFavorite.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(validationResult.error));
+    next(new validationError(JSON.stringify(validationResult.error.details)));
   }
   next();
 }

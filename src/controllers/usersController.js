@@ -8,10 +8,11 @@ const {
   updateFavorite,
   updateAllFields,
   deleteUserById
-} = require('../services/userService');
+} = require('../services/contactService');
 
 const getUsersController = async (req, res) => {
-  const result = await getUsers();
+  const {_id: owner} = req.user;
+  const result = await getUsers(owner);
   res.json({
     status: 'success',
     data: result,
@@ -19,8 +20,9 @@ const getUsersController = async (req, res) => {
 }
 
 const getUserbyIdController = async (req, res) => {
-  const {id} = req.params;
-  const result = await getUserById(id);
+  const {id: contactId} = req.params;
+  const {_id: owner} = req.user;
+  const result = await getUserById(contactId, owner);
   res.json({
     status: "success",
     data: result
@@ -29,60 +31,67 @@ const getUserbyIdController = async (req, res) => {
 
 const postUserController = async (req, res) => {
   const {name, email, phone, favorite} = req.body;
-  await addUser({name, email, phone, favorite});
+  const {_id: owner} = req.user;
+  await addUser({name, email, phone, favorite}, owner);
   res.json({
     status: "success",
   });
 }
 
 const updateNameController = async (req, res) => {
-  const {id} = req.params;
+  const {id: contactId} = req.params;
   const {name} = req.body;
-  await updateName(id, {name})
+  const {_id: owner} = req.user;
+  await updateName(contactId, {name}, owner)
   res.json({
     status: "Success",
   })
 }
 
 const updateEmailController = async (req, res) => {
-  const {id} = req.params;
+  const {id: contactId} = req.params;
   const {email} = req.body;
-  await updateEmail(id, {email});
+  const {_id: owner} = req.user;
+  await updateEmail(contactId, {email}, owner);
   res.json({
     status: "Success",
   })
 }
 
 const updatePhoneController = async (req, res) => {
-  const {id} = req.params;
+  const {id: contactId} = req.params;
   const {phone} = req.body;
-  await updatePhone(id, {phone});
+  const {_id: owner} = req.user;
+  await updatePhone(contactId, {phone}, owner);
   res.json({
     status: "Success",
   })
 }
 
 const updateFavoriteController = async (req, res) => {
-  const {id} = req.params;
+  const {id: contactId} = req.params;
   const {favorite} = req.body;
-  await updateFavorite(id, {favorite});
+  const {_id: owner} = req.user;
+  await updateFavorite(contactId, {favorite}, owner);
   res.json({
     status: "Success",
   })
 }
 
 const updateAllfieldsController = async (req, res) => {
-  const {id} = req.params;
+  const {id: contactId} = req.params;
+  const {_id: owner} = req.user;
   const {name, email, phone, favorite} = req.body;
-  await updateAllFields(id, {$set: {name, email, phone, favorite }});
+  await updateAllFields(contactId, {name, email, phone, favorite }, owner);
   res.json({
     status: "Success",
   })
 }
 
 const deleteUserController = async (req, res) => {
-  const {id} = req.params;
-  await deleteUserById(id);
+  const {id: contactId} = req.params;
+  const {_id: owner} = req.user;
+  await deleteUserById(contactId, owner);
   res.json({
     status: "Success",
   })

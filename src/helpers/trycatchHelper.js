@@ -1,6 +1,5 @@
 const {
-  validationError,
-  WrongIdError
+  Nodejs26Error
 } = require ('./errors');
 
 
@@ -11,10 +10,7 @@ const asyncWrapper = controller => {
 }
 
 const errorHandler = (error, req, res, next) => {
-  if (
-    error instanceof validationError ||
-     error instanceof WrongIdError
-  ){
+  if (error instanceof Nodejs26Error){
     return res.status(error.status).json({message: error.message});
   }
   res.status(500).json({message: error.message});
