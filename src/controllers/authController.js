@@ -1,4 +1,4 @@
-const {registration, login} = require('../services/authService');
+const {registration, login, logout} = require('../services/authService');
 
 const registrationController = async (req,res) => {
   const {email, password} = req.body;
@@ -17,8 +17,16 @@ const loginController = async (req,res) => {
   })
 }
 
+const logoutController = async (req,res) => {
+  const user = req.user;
+  await logout(user);
+  res.json({
+    status: "success"
+  })
+}
 
 module.exports = {
   registrationController,
-  loginController
+  loginController,
+  logoutController
 }

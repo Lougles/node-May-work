@@ -25,7 +25,17 @@ const login = async (email,password) => {
   return token;
 };
 
+const logout = async (user) => {
+  const check = await Auth.findById(user._id);
+  if (!check) {
+    throw new NotAuthorizedError(`No user with such email: ${email}, please input correct data`);
+  }
+  console.log(check);
+  return check
+}
+
 module.exports = {
   registration,
-  login
+  login,
+  logout
 }
