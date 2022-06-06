@@ -3,11 +3,12 @@ const router = new express.Router();
 const {
   registrationController,
   loginController
-} = require('../../controllers/authController')
+} = require('../../controllers/authController');
+const {registrationValidation} = require('../../middlewares/validation')
 const {asyncWrapper} = require('../../helpers/trycatchHelper');
 
 
-router.post('/registration', asyncWrapper(registrationController));
+router.post('/registration', registrationValidation, asyncWrapper(registrationController));
 router.post('/login', asyncWrapper(loginController));
 
 

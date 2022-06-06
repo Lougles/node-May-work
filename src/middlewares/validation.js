@@ -28,39 +28,54 @@ const joiFavorite = Joi.object({
 const joiPhone = Joi.object({
   phone: Joi.string().required(),
 })
+const joiRegistration = Joi.object({
+  email: Joi.string().email({
+    minDomainSegments: 2, tlds: {
+      allow: ['com', 'net']
+    }
+  }).required(),
+  password: Joi.string().min(6).max(16).required(),
+})
 
 const addUserValidation = (req, res, next) => {
   const validationResult = schema.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(JSON.stringify(validationResult.error.details)));
+    next(new validationError(validationResult.error));
   }
   next();
 }
 const updateNameValidation = (req, res, next) => {
   const validationResult = joiName.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(JSON.stringify(validationResult.error.details)));
+    next(new validationError(validationResult.error));
   }
   next();
 }
 const updateEmailValidation = (req, res, next) => {
   const validationResult = joiEmail.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(JSON.stringify(validationResult.error.details)));
+    next(new validationError(validationResult.error));
   }
   next();
 }
 const updatePhoneValidation = (req, res, next) => {
   const validationResult = joiPhone.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(JSON.stringify(validationResult.error.details)));
+    next(new validationError(validationResult.error));
   }
   next();
 }
 const updateFavoriteValidation = (req, res, next) => {
   const validationResult = joiFavorite.validate(req.body);
   if (validationResult.error) {
-    next(new validationError(JSON.stringify(validationResult.error.details)));
+    next(new validationError(validationResult.error));
+  }
+  next();
+}
+const registrationValidation = (req,res,next) => {
+  const validationResult = joiRegistration.validate(req.body);
+  if (validationResult.error) {
+    next(new validationError(validationResult.error));
   }
   next();
 }
@@ -70,5 +85,6 @@ module.exports = {
   updateNameValidation,
   updateEmailValidation,
   updatePhoneValidation,
-  updateFavoriteValidation
+  updateFavoriteValidation,
+  registrationValidation
 }

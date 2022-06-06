@@ -10,7 +10,7 @@ const {
   updatePhoneController, 
   updateEmailController, 
   updateNameController
-} = require('../../controllers/usersController')
+} = require('../../controllers/contactsController')
 const {asyncWrapper} = require('../../helpers/trycatchHelper');
 const {
   addUserValidation, 
