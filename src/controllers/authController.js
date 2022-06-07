@@ -18,11 +18,14 @@ const loginController = async (req,res) => {
 }
 
 const logoutController = async (req,res) => {
-  const user = req.user;
-  await logout(user);
-  res.json({
-    status: "success"
-  })
+  res.cookie('jwt', '', {maxAge: 1});
+  res.redirect('/');
+  // const user = req.user;
+  // const result = await logout(user);
+  // res.json({
+  //   status: "success",
+  //   data: result
+  // })
 }
 
 module.exports = {

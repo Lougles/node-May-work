@@ -26,11 +26,11 @@ const login = async (email,password) => {
 };
 
 const logout = async (user) => {
-  const check = await Auth.findById(user._id);
+  let check = await Auth.findById(user._id);
   if (!check) {
-    throw new NotAuthorizedError(`No user with such email: ${email}, please input correct data`);
+    throw new NotAuthorizedError(`You are not Aunthorized`);
   }
-  console.log(check);
+  check = 'No data';
   return check
 }
 
