@@ -12,10 +12,19 @@ const {
 
 const getUsersController = async (req, res) => {
   const {_id: owner} = req.user;
-  const result = await getUsers(owner);
+  let {
+    skip = 0,
+    limit = 5
+  } = req.query;
+  limit = parseInt(limit) > 10 ? 10 : limit;
+  skip = parseInt(skip);
+  
+  const result = await getUsers(owner, {skip, limit});
   res.json({
     status: 'success',
     data: result,
+    skip,
+    limit
   })
 }
 
