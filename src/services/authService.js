@@ -25,6 +25,11 @@ const login = async (email,password) => {
   return token;
 };
 
+const current = async(user) => {
+  const result = await Auth.findById(user._id);
+  return result;
+}
+
 const logout = async (user) => {
   let check = await Auth.findById(user._id);
   if (!check) {
@@ -37,5 +42,6 @@ const logout = async (user) => {
 module.exports = {
   registration,
   login,
+  current,
   logout
 }

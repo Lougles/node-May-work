@@ -3,15 +3,17 @@ const router = new express.Router();
 const {
   registrationController,
   loginController,
+  currentUserController,
   // logoutController
 } = require('../../controllers/authController');
 const {registrationValidation} = require('../../middlewares/validation')
 const {asyncWrapper} = require('../../helpers/trycatchHelper');
-// const {authMiddleware} = require('../../middlewares/authMiddleware');
+const {authMiddleware} = require('../../middlewares/authMiddleware');
 
 
 router.post('/registration', registrationValidation, asyncWrapper(registrationController));
 router.post('/login', asyncWrapper(loginController));
+router.get('/current', authMiddleware, asyncWrapper(currentUserController));
 // router.use(authMiddleware);
 // router.post('/logout', asyncWrapper(logoutController));
 
