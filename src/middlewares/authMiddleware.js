@@ -16,6 +16,19 @@ const authMiddleware = (req,res,next) => {
   }
  }
 
+const logoutMiddleware = (req,res,next) => {
+  // let [,token] = req.headers['authorization'].split(' ');
+  // if (!token) {
+  //   next(new NotAuthorizedError('Please provide a token!'));
+  // }
+  // try{
+
+  //   next();
+  // }catch(err) {
+  //   next(new NotAuthorizedError('Invalid token!'));
+  // }
+}
+
  module.exports = {
   authMiddleware
  }
