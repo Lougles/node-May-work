@@ -19,19 +19,19 @@ const login = async (email,password) => {
   const token = jwt.sign({
     _id: user._id,
     createdAt: user.createdAt,
-  }, process.env.JWT_SECRET);
+  }, process.env.JWT_SECRET, {expiresIn: "1h"});
   return token;
 };
 const current = async(user) => {
   const result = await Auth.findById(user._id);
   return result;
-}
+};
 const logout = async (token) => {
   if (!token) {
     throw new NotAuthorizedError(`No user with such email: ${email}, please input correct data`);
   }
-  console.log(token);
-  const deleteToken = jwt.sign(token, process.env.JWT_SECRET, {expiresIn: "1s"});
+  const deleteToken = jwt.sign({token}, process.env.JWT_SECRET, {expiresIn: 1});
+  console.log(deleteToken);
   return deleteToken;
 }
 module.exports = {
