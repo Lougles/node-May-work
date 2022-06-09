@@ -1,8 +1,11 @@
 const {Contact} = require('../db/contactsModel');
 const {WrongIdError} = require('../helpers/errors')
 
-const getUsers = async (owner) => {
-  const result = await Contact.find({owner});
+const getUsers = async (owner, {skip, limit}) => {
+  const result = await Contact.find({owner})
+  .select({__v: 0,})
+  .skip(skip)
+  .limit(limit);
   return result;
 };
 

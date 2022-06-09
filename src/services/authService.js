@@ -4,12 +4,10 @@ require('dotenv').config()
 const {Auth} = require('../db/authModel');
 const {NotAuthorizedError} = require('../helpers/errors');
 
-
 const registration = async (email, password) => {
   const user = new Auth({email,password});
   await user.save();
 };
-
 const login = async (email,password) => {
   const user = await Auth.findOne({email});
   if (!user) {
@@ -21,11 +19,24 @@ const login = async (email,password) => {
   const token = jwt.sign({
     _id: user._id,
     createdAt: user.createdAt,
-  }, process.env.JWT_SECRET);
+  }, process.env.JWT_SECRET, {expiresIn: "1h"});
   return token;
 };
-
+const current = async(user) => {
+  const result = await Auth.findById(user._id);
+  return result;
+};
+const logout = async (token) => {
+  if (!token) {
+    throw new NotAuthorizedError(`No user with such email: ${email}, please input correct data`);
+  }
+  const deleteToken = jwt.sign({token}, process.env.JWT_SECRET, {expiresIn: 1});
+  console.log(deleteToken);
+  return deleteToken;
+}
 module.exports = {
   registration,
-  login
+  login,
+  current,
+  logout
 }
