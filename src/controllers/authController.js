@@ -1,15 +1,17 @@
-const { JsonWebTokenError } = require('jsonwebtoken');
 const {registration, login, current, logout} = require('../services/authService');
 
 const registrationController = async (req,res) => {
   const {email, password} = req.body;
-  await registration(email, password);
+  const result = await registration(email, password);
   res.json({
     status: "success",
-    data: `Your ${email} is registered`,
+    message: `Your ${email} is registered`,
+    data: {
+      email: result.email,
+      subscription: result.subscription,
+    },
   })
 }
-
 const loginController = async (req,res) => {
   const {email, password} = req.body;
   const token = await login(email, password);
@@ -18,7 +20,6 @@ const loginController = async (req,res) => {
     data: token, 
   })
 }
-
 const currentUserController = async (req, res) => {
   const user = req.user;
   const result = await current(user);
@@ -30,7 +31,6 @@ const currentUserController = async (req, res) => {
     },
   })
 }
-
 const logoutController = async (req,res) => {
   const [,token] = req.headers['authorization'].split(' ');
   await logout(token);
@@ -39,7 +39,6 @@ const logoutController = async (req,res) => {
     message: 'Not authorized',
   })
 }
-
 module.exports = {
   registrationController,
   loginController,
