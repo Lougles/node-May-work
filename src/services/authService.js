@@ -7,6 +7,7 @@ const {NotAuthorizedError} = require('../helpers/errors');
 const registration = async (email, password) => {
   const user = new Auth({email,password});
   await user.save();
+  return user;
 };
 const login = async (email,password) => {
   const user = await Auth.findOne({email});
@@ -20,6 +21,8 @@ const login = async (email,password) => {
     _id: user._id,
     createdAt: user.createdAt,
   }, process.env.JWT_SECRET, {expiresIn: "1h"});
+  user.token = token;
+  await user.save();
   return token;
 };
 const current = async(user) => {
