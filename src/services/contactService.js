@@ -2,6 +2,9 @@ const {Contact} = require('../db/contactsModel');
 const {WrongIdError} = require('../helpers/errors')
 
 const getUsers = async (owner, {page}) => {
+  if(!page){
+    page = 1;
+  }
   const limit = 5;
   const skip = parseInt(page - 1) * parseInt(limit);
   const result = await Contact.find({owner})

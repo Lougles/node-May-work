@@ -17,7 +17,6 @@ const getUsersController = async (req, res) => {
   res.json({
     status: 'success',
     data: result,
-    page: page
   })
 }
 
