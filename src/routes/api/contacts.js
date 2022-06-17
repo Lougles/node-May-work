@@ -2,7 +2,6 @@ const express = require('express');
 const router = new express.Router();
 const {
   getUsersController,
-  getUsersFavoriteController,
   getUserbyIdController, 
   deleteUserController, 
   postUserController, 
@@ -25,7 +24,6 @@ const {authMiddleware} = require('../../middlewares/authMiddleware');
 
 router.use(authMiddleware);
 router.get('/', asyncWrapper(getUsersController));
-router.get('/:favorite', asyncWrapper(getUsersFavoriteController));
 router.get(`/:id`, asyncWrapper(getUserbyIdController));
 router.post('/', addUserValidation, asyncWrapper(postUserController));
 router.put('/name/:id', updateNameValidation, asyncWrapper(updateNameController ));

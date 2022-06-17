@@ -16,7 +16,7 @@ app.use(express.json()) //middleware for parse req.body()
 app.use('/api/contacts', contactsRouter);
 app.use('/api/auth', authRouter);
 app.use((req, res) => {
-  res.status(404).json({ message: 'Error! Not Found' })
+  res.status(404).json({ message: 'Error! Wrong direct' })
 })
 app.use(errorHandler);
 module.exports = app

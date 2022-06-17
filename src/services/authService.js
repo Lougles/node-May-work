@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const {Auth} = require('../db/authModel');
-const {NotAuthorizedError} = require('../helpers/errors');
+const {NotAuthorizedError, UpdateSubscribeError} = require('../helpers/errors');
 
 const registration = async (email, password) => {
   const user = new Auth({email,password});
@@ -30,16 +30,22 @@ const current = async(user) => {
   return result;
 };
 const logout = async (token) => {
-  if (!token) {
-    throw new NotAuthorizedError(`No user with such email: ${email}, please input correct data`);
-  }
   const deleteToken = jwt.sign({token}, process.env.JWT_SECRET, {expiresIn: 1});
-  console.log(deleteToken);
   return deleteToken;
+}
+const updateSubscribe = async (user, subscribe) => {
+  const subscription = ['starter', 'pro', 'business'];
+  if (!subscription.includes(subscribe)){
+    throw new UpdateSubscribeError(`This subscribe: "${subscribe}" is incorrect`)
+  }
+  user.subscription = subscribe;
+  await user.save();
+  return user;
 }
 module.exports = {
   registration,
   login,
   current,
-  logout
+  logout,
+  updateSubscribe
 }
