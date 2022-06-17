@@ -4,7 +4,8 @@ const {
   registrationController,
   loginController,
   currentUserController,
-  logoutController
+  logoutController,
+  updateSubscribeController
 } = require('../../controllers/authController');
 const {registrationValidation} = require('../../middlewares/validation')
 const {asyncWrapper} = require('../../helpers/trycatchHelper');
@@ -15,5 +16,6 @@ router.post('/registration', registrationValidation, asyncWrapper(registrationCo
 router.post('/login', asyncWrapper(loginController));
 router.get('/current', authMiddleware, asyncWrapper(currentUserController));
 router.get('/logout', authMiddleware, asyncWrapper(logoutController));
+router.patch('/users', authMiddleware, asyncWrapper(updateSubscribeController))
 
 module.exports = router

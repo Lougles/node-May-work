@@ -25,9 +25,17 @@ class NotAuthorizedError extends Nodejs26Error {
   }
 }
 
+class UpdateSubscribeError extends Nodejs26Error {
+  constructor(message){
+    super(message);
+    this.status = 400;
+  }
+}
+
 module.exports = {
   Nodejs26Error,
   validationError,
   WrongIdError,
-  NotAuthorizedError
+  NotAuthorizedError,
+  UpdateSubscribeError
 }

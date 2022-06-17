@@ -1,7 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 const {
-  getUsersController, 
+  getUsersController,
   getUserbyIdController, 
   deleteUserController, 
   postUserController, 
