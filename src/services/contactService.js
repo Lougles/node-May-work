@@ -1,13 +1,33 @@
 const {Contact} = require('../db/contactsModel');
 const {WrongIdError} = require('../helpers/errors')
 
-const getUsers = async (owner, {page}) => {
+const getUsers = async (owner, favorite, {page}) => {
   if(!page){
     page = 1;
   }
   const limit = 5;
   const skip = parseInt(page - 1) * parseInt(limit);
-  const result = await Contact.find({owner})
+  if(favorite === undefined){
+    const result = await Contact.find({owner})
+    .select({name: 1, email: 1, phone: 1, favorite: 1})
+    .skip(skip)
+    .limit(limit);
+    return result;
+  }
+  const result = await Contact.find({owner, favorite})
+  .select({name: 1, email: 1, phone: 1, favorite: 1})
+  .skip(skip)
+  .limit(limit);
+  return result;
+};
+
+const getUsersFavorite = async (owner, fav, {page}) => {
+  if(!page){
+    page = 1;
+  }
+  const limit = 5;
+  const skip = parseInt(page - 1) * parseInt(limit);
+  const result = await Contact.find({owner, fav})
   .select({name: 1, email: 1, phone: 1, favorite: 1})
   .skip(skip)
   .limit(limit);
@@ -78,6 +98,7 @@ const deleteUserById = async (contactId, owner) => {
 
 module.exports = {
   getUsers,
+  getUsersFavorite,
   getUserById,
   addUser,
   updateName,

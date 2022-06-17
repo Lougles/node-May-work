@@ -1,5 +1,6 @@
 const {
   getUsers,
+  getUsersFavorite,
   getUserById,
   addUser,
   updateName,
@@ -11,15 +12,25 @@ const {
 } = require('../services/contactService');
 
 const getUsersController = async (req, res) => {
+  const {favorite} = req.query;
   const {_id: owner} = req.user;
   const page = parseInt(req.query.page);
-  const result = await getUsers(owner, {page});
+  const result = await getUsers(owner, favorite, {page});
   res.json({
     status: 'success',
     data: result,
   })
 }
-
+const getUsersFavoriteController = async (req, res) => {
+  const {favorite: fav} = req.params;
+  const {_id: owner} = req.user;
+  const page = parseInt(req.query.page);
+  const result = await getUsersFavorite(owner,fav, {page});
+  res.json({
+    status: 'success',
+    data: result,
+  })
+}
 const getUserbyIdController = async (req, res) => {
   const {id: contactId} = req.params;
   const {_id: owner} = req.user;
@@ -100,6 +111,7 @@ const deleteUserController = async (req, res) => {
 
 module.exports = {
   getUsersController,
+  getUsersFavoriteController,
   getUserbyIdController,
   deleteUserController,
   postUserController,
