@@ -1,7 +1,6 @@
 const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
-
 const contactsRouter = require('./src/routes/api/contacts');
 const authRouter = require('./src/routes/api/auth');
 const {errorHandler} = require('./src/helpers/trycatchHelper');
