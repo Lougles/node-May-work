@@ -1,4 +1,4 @@
-const {upload} = require('../services/authService');
+// const {upload} = require('../services/authService');
 
 const uploadController = async (req,res) => {
   res.json({
