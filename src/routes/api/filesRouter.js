@@ -26,6 +26,6 @@ const {
 
 
 router.post('/upload', uploadMiddleware.single('avatar'), asyncWrapper(uploadController));
-router.use('/download', express.static(fileDir));
+router.use('/avatars', express.static(fileDir));
 
 module.exports = router;

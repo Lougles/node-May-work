@@ -9,6 +9,7 @@ const registrationController = async (req,res) => {
     data: {
       email: result.email,
       subscription: result.subscription,
+      ava: result.avatarURL,
     },
   })
 }
@@ -27,10 +28,24 @@ const currentUserController = async (req, res) => {
     status: "success",
     data: {
       email: result.email,
-      subscribe: result.subscription
+      subscribe: result.subscription,
+      ava: result.avatarURL,
     },
   })
 }
+
+const updateAvatarController = async (req, res) => {
+  const user = req.user;
+  res.json({
+    status: "success",
+    data: {
+      email: result.email,
+      subscribe: result.subscription,
+      ava: result.avatarURL,
+    },
+  })
+}
+
 const logoutController = async (req,res) => {
   const [,token] = req.headers['authorization'].split(' ');
   await logout(token);

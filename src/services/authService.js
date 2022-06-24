@@ -37,6 +37,9 @@ const logout = async (token) => {
   console.log(deleteToken);
   return deleteToken;
 }
+
+
+
 module.exports = {
   registration,
   login,

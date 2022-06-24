@@ -13,6 +13,7 @@ const {authMiddleware} = require('../../middlewares/authMiddleware');
 
 router.post('/registration', registrationValidation, asyncWrapper(registrationController));
 router.post('/login', asyncWrapper(loginController));
+router.patch('/avatar', authMiddleware, asyncWrapper());
 router.get('/current', authMiddleware, asyncWrapper(currentUserController));
 router.get('/logout', authMiddleware, asyncWrapper(logoutController));
 
