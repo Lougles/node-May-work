@@ -29,6 +29,10 @@ const current = async(user) => {
   const result = await Auth.findById(user._id);
   return result;
 };
+const updateAvatar = async(user) => {
+  // const result;
+  // return result;
+}
 const logout = async (token) => {
   if (!token) {
     throw new NotAuthorizedError(`No user with such email: ${email}, please input correct data`);
@@ -44,5 +48,6 @@ module.exports = {
   registration,
   login,
   current,
+  updateAvatar,
   logout
 }

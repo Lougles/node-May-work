@@ -13,11 +13,11 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const [, extansion] = file.originalname.split('.');
     cb(null, `${uuidv4() }.${extansion}`)
-  }
+  },
 });
 
 const uploadMiddleware = multer({storage});
-
+console.log(uploadMiddleware.storage.filename);
 
 const {asyncWrapper} = require('../../helpers/trycatchHelper')
 const {

@@ -4,6 +4,7 @@ const {
   registrationController,
   loginController,
   currentUserController,
+  updateAvatarController,
   logoutController
 } = require('../../controllers/authController');
 const {registrationValidation} = require('../../middlewares/validation')
@@ -13,7 +14,7 @@ const {authMiddleware} = require('../../middlewares/authMiddleware');
 
 router.post('/registration', registrationValidation, asyncWrapper(registrationController));
 router.post('/login', asyncWrapper(loginController));
-router.patch('/avatar', authMiddleware, asyncWrapper());
+router.patch('/avatar', authMiddleware, asyncWrapper(updateAvatarController));
 router.get('/current', authMiddleware, asyncWrapper(currentUserController));
 router.get('/logout', authMiddleware, asyncWrapper(logoutController));
 
