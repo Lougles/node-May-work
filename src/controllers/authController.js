@@ -1,5 +1,6 @@
 const {registration, login, current, updateAvatar, logout} = require('../services/authService');
 
+
 const registrationController = async (req,res) => {
   const {email, password} = req.body;
   const result = await registration(email, password);
@@ -36,7 +37,10 @@ const currentUserController = async (req, res) => {
 
 const updateAvatarController = async (req, res) => {
   const user = req.user;
-  const result = await updateAvatar(user);
+  const file = req.file;
+  // console.log('USER',user);
+  // console.log('file', file);
+  const result = await updateAvatar(user, file);
   res.json({
     status: "success",
     data: {

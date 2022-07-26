@@ -15,9 +15,7 @@ const storage = multer.diskStorage({
     cb(null, `${uuidv4() }.${extansion}`)
   },
 });
-
 const uploadMiddleware = multer({storage});
-console.log(uploadMiddleware.storage.filename);
 
 const {asyncWrapper} = require('../../helpers/trycatchHelper')
 const {
