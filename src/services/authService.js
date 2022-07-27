@@ -13,10 +13,9 @@ const updateAvatar = async(user, file) => {
   const filename = file.filename;
   const newpath = path.resolve('./public/avatars');
   const FILE_DIR = `${newpath}/${filename}`;
-  console.log("NEW PATH",newpath);
-  const qwe =  jimpAvatar(file);
-  const result = await Auth.findOneAndUpdate({_id: user._id}, {$set: {avatarURL: FILE_DIR}});
-  console.log('RESULT',result);
+  jimpAvatar(file);
+  await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: FILE_DIR}});
+  const result = Auth.findById(user._id);
   return result;
 };
 const jimpAvatar = (file) => {
