@@ -13,9 +13,10 @@ const updateAvatar = async(user, file) => {
   const filename = file.filename;
   const newpath = path.resolve('./public/avatars');
   const FILE_DIR = `${newpath}/${filename}`;
+  console.log(FILE_DIR);
   jimpAvatar(file);
   await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: FILE_DIR}});
-  const result = Auth.findById(user._id);
+  const result =  await Auth.findById(user._id);
   return result;
 };
 const jimpAvatar = (file) => {
@@ -25,7 +26,6 @@ const jimpAvatar = (file) => {
     return ava
       .resize(250, 250) // resize
       .quality(60) // set JPEG quality
-      // .greyscale() // set greyscale
       .write(FILE_DIR); // save
   })
   .catch(err => {

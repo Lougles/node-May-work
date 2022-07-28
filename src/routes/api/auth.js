@@ -39,7 +39,6 @@ const upload = multer({storage});
 router.post('/registration', registrationValidation, asyncWrapper(registrationController));
 router.post('/login', asyncWrapper(loginController));
 router.patch('/avatar', [authMiddleware, upload.single('avatar')], asyncWrapper(updateAvatarController));
-// router.put('/avatar', [authMiddleware, upload.single('avatar')], asyncWrapper(updateAvatarController));
 router.get('/current', authMiddleware, asyncWrapper(currentUserController));
 router.get('/logout', authMiddleware, asyncWrapper(logoutController));
 
