@@ -38,10 +38,7 @@ const currentUserController = async (req, res) => {
 const updateAvatarController = async (req, res) => {
   const user = req.user;
   const file = req.file;
-  // console.log('USER',user);
-  // console.log('file', file);
   const result = await updateAvatar(user, file);
-  // console.log(result);
   res.json({
     status: "success",
     data: {
