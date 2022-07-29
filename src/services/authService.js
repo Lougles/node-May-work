@@ -5,22 +5,26 @@ const {Auth} = require('../db/authModel');
 const {NotAuthorizedError} = require('../helpers/errors');
 const path = require('path');
 const {jimpAvatar} = require('../helpers/jimpAvatar');
-
+const fs = require('fs-extra');
+const newpath = path.resolve('./public');
 
 
 const updateAvatar = async(user, file) => {
-  const filename = file.filename;
-  const newpath = path.resolve('./public/avatars');
-  const FILE_DIR = `${newpath}/${filename}`;
-  jimpAvatar(file);
+  if (fs.existsSync(`${newpath}/${user._id}`)) {
+    fs.unlink(`${user.avatarURL}`);
+  }
+  const FILE_DIR = `${newpath}/${user._id}/${file.filename}`;
+  jimpAvatar(file, user);
   const result = await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: FILE_DIR}}, {returnDocument: 'after'});
   return result;
 };
+
 const registration = async (email, password) => {
   const user = new Auth({email,password});
   await user.save();
   return user;
 };
+
 const login = async (email,password) => {
   const user = await Auth.findOne({email});
   if (!user) {
@@ -37,6 +41,7 @@ const login = async (email,password) => {
   await user.save();
   return token;
 };
+
 const current = async(user) => {
   const result = await Auth.findById(user._id);
   return result;
@@ -48,7 +53,7 @@ const logout = async (token) => {
   }
   const deleteToken = jwt.sign({token}, process.env.JWT_SECRET, {expiresIn: 1});
   return deleteToken;
-}
+};
 
 module.exports = {
   registration,

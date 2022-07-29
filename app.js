@@ -2,6 +2,8 @@ const express = require('express')
 const logger = require('morgan')
 const cors = require('cors');
 
+const path = require('path')
+const staticFiles = path.resolve('./public')
 
 const contactsRouter = require('./src/routes/api/contacts');
 const authRouter = require('./src/routes/api/auth');
@@ -15,6 +17,7 @@ app.use(logger(formatsLogger))
 app.use(cors())
 app.use(express.json()) //middleware for parse req.body() 
 
+// app.use(express.static(staticFiles + "/public"));
 app.use('/api/contacts', contactsRouter);
 app.use('/api/auth', authRouter);
 app.use(filesRouter);
