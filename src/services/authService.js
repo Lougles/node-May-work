@@ -10,12 +10,13 @@ const newpath = path.resolve('./public');
 
 
 const updateAvatar = async(user, file) => {
-  if (fs.existsSync(`${newpath}/${user._id}`)) {
-    fs.unlink(`${user.avatarURL}`);
-  }
-  const FILE_DIR = `${newpath}/${user._id}/${file.filename}`;
-  jimpAvatar(file, user);
-  const result = await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: FILE_DIR}}, {returnDocument: 'after'});
+  // if (fs.existsSync(`${newpath}/${user._id}`)) {
+  //   fs.unlink(`${user.avatarURL}`);
+  // }
+  // const FILE_DIR = `${newpath}/${user._id}/${file.filename}`;
+  const gcp_DIR = 'qwerty';
+  await jimpAvatar(file, user);
+  const result = await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: gcp_DIR}}, {returnDocument: 'after'});
   return result;
 };
 
