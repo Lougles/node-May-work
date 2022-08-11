@@ -13,6 +13,14 @@ async function uploadAva(filePath, destFileName) {
   console.log(`${filePath} uploaded to ${bucketName}`);
 };
 
+async function downloadFile(fileName, destFileName) {
+  const options = {
+    destination: destFileName,
+  };
+  await storage.bucket(bucketName).file(fileName).download(options);
+}
+
 module.exports = {
-  uploadAva
+  uploadAva,
+  downloadFile
 }

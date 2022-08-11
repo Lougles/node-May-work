@@ -2,7 +2,7 @@ const Jimp = require('jimp');
 const fs = require('fs-extra');
 const path = require('path');
 const temp = path.resolve('./temp');
-const {uploadAva} = require('../../google-storage')
+const {uploadAva} = require('./google-storage')
 
 const jimpAvatar = async (file, user) => {
   // const dir = `${user._id}`;

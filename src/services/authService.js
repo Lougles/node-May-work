@@ -3,20 +3,14 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const {Auth} = require('../db/authModel');
 const {NotAuthorizedError} = require('../helpers/errors');
-const path = require('path');
 const {jimpAvatar} = require('../helpers/jimpAvatar');
-const fs = require('fs-extra');
-const newpath = path.resolve('./public');
 
 
 const updateAvatar = async(user, file) => {
-  // if (fs.existsSync(`${newpath}/${user._id}`)) {
-  //   fs.unlink(`${user.avatarURL}`);
-  // }
-  // const FILE_DIR = `${newpath}/${user._id}/${file.filename}`;
-  const gcp_DIR = 'qwerty';
+  const gcp_DIR = 'https://storage.cloud.google.com/may-work-test/';
+  const FILE_DIR = `${gcp_DIR}${file.filename}`;
   await jimpAvatar(file, user);
-  const result = await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: gcp_DIR}}, {returnDocument: 'after'});
+  const result = await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: FILE_DIR}}, {returnDocument: 'after'});
   return result;
 };
 
