@@ -2,8 +2,17 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const {Auth} = require('../db/authModel');
-const {NotAuthorizedError, UpdateSubscribeError} = require('../helpers/errors');
+const {NotAuthorizedError} = require('../helpers/errors');
+const {jimpAvatar} = require('../helpers/jimpAvatar');
 
+
+const updateAvatar = async(user, file) => {
+  const gcp_DIR = 'https://storage.cloud.google.com/may-work-test/';
+  const FILE_DIR = `${gcp_DIR}${file.filename}`;
+  await jimpAvatar(file, user);
+  const result = await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: FILE_DIR}}, {returnDocument: 'after'});
+  return result;
+};
 const registration = async (email, password) => {
   const user = new Auth({email,password});
   await user.save();
@@ -25,27 +34,23 @@ const login = async (email,password) => {
   await user.save();
   return token;
 };
+
 const current = async(user) => {
   const result = await Auth.findById(user._id);
   return result;
 };
+
 const logout = async (token) => {
+  if (!token) {
+    throw new NotAuthorizedError(`No user with such email: ${email}, please input correct data`);
+  }
   const deleteToken = jwt.sign({token}, process.env.JWT_SECRET, {expiresIn: 1});
   return deleteToken;
-}
-const updateSubscribe = async (user, subscribe) => {
-  const subscription = ['starter', 'pro', 'business'];
-  if (!subscription.includes(subscribe)){
-    throw new UpdateSubscribeError(`This subscribe: "${subscribe}" is incorrect`)
-  }
-  user.subscription = subscribe;
-  await user.save();
-  return user;
-}
+};
 module.exports = {
   registration,
   login,
   current,
-  logout,
-  updateSubscribe
+  updateAvatar,
+  logout
 }

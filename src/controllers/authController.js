@@ -1,4 +1,4 @@
-const {registration, login, current, logout, updateSubscribe} = require('../services/authService');
+const {registration, login, current, updateAvatar, logout} = require('../services/authService');
 
 const registrationController = async (req,res) => {
   const {email, password} = req.body;
@@ -9,6 +9,7 @@ const registrationController = async (req,res) => {
     data: {
       email: result.email,
       subscription: result.subscription,
+      ava: result.avatarURL,
     },
   })
 }
@@ -27,10 +28,24 @@ const currentUserController = async (req, res) => {
     status: "success",
     data: {
       email: result.email,
-      subscribe: result.subscription
+      subscribe: result.subscription,
+      ava: result.avatarURL,
     },
   })
 }
+
+const updateAvatarController = async (req, res) => {
+  const user = req.user;
+  const file = req.file;
+  const result = await updateAvatar(user, file);
+  res.json({
+    status: "success",
+    data: {
+      ava: result.avatarURL,
+    },
+  })
+}
+
 const logoutController = async (req,res) => {
   const [,token] = req.headers['authorization'].split(' ');
   await logout(token);
@@ -39,20 +54,10 @@ const logoutController = async (req,res) => {
     message: 'Not authorized',
   })
 }
-const updateSubscribeController = async (req, res) => {
-  const user = req.user;
-  const {subscribe} = req.query;
-  const result = await updateSubscribe(user, subscribe);
-  res.json({
-    status: "success",
-    email: result.email,
-    subscription: result.subscription,
-  })
-}
 module.exports = {
   registrationController,
   loginController,
   currentUserController,
-  logoutController,
-  updateSubscribeController
+  updateAvatarController,
+  logoutController
 }
