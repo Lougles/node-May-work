@@ -13,13 +13,11 @@ const updateAvatar = async(user, file) => {
   const result = await Auth.findOneAndUpdate({_id: user._id},{$set: {avatarURL: FILE_DIR}}, {returnDocument: 'after'});
   return result;
 };
-
 const registration = async (email, password) => {
   const user = new Auth({email,password});
   await user.save();
   return user;
 };
-
 const login = async (email,password) => {
   const user = await Auth.findOne({email});
   if (!user) {
@@ -49,7 +47,6 @@ const logout = async (token) => {
   const deleteToken = jwt.sign({token}, process.env.JWT_SECRET, {expiresIn: 1});
   return deleteToken;
 };
-
 module.exports = {
   registration,
   login,
