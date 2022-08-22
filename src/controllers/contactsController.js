@@ -20,6 +20,7 @@ const getUsersController = async (req, res) => {
     data: result,
   })
 }
+
 const getUserbyIdController = async (req, res) => {
   const {id: contactId} = req.params;
   const {_id: owner} = req.user;

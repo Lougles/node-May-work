@@ -2,7 +2,6 @@ const multer = require('multer');
 const path = require('path');
 const temp = path.resolve('./temp');
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs-extra');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
